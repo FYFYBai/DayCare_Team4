@@ -1,3 +1,7 @@
+# ignore the tmplcache and vendor folders in the app
+vendor
+tmplcache
+
 # Ignore the logs folder in the app
 /app/logs/
 
