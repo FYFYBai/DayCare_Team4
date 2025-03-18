@@ -1,4 +1,25 @@
-Question to note daily:
-1. What I have done / not done since last Scrum
-2. What I plan to do from this scrum to next? (next 24 hours)
-3. Where do I need assistance? What do I need to figure out?
+2025/03/18 Shao Hang
+1. Done since last scrum
+   Mockup changes (simplified) and remove unnecessary parts.
+2. Plan until next Scrum
+   Watch class recordings + initiate to Laravel 
+3. Need assistance / figure things out
+   Figure out how Laravel works.
+
+2025/03/18 Qi He
+1. Done since last scrum
+    Fixed some errors and made some adjustments to proposal regarding use-case diagram and URLs
+2. Plan until next Scrum
+   Keep working on recordings and learning materials needed for project in order to avoid redoing unecessary work in the future
+3. Need assistance / figure things out
+   TBD
+ 
+2025/03/18 Ritu Arora
+1. Done since last scrum
+Fixed the proposal and submitted it
+Created the DB tables
+2. Plan until next Scrum
+Watch Videos provided by greg
+Create user-stories on Trello board
+3. Need assistance / figure things out
+Make a decision on : PHPslim or Laravel?
