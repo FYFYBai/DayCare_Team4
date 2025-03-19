@@ -1,3 +1,5 @@
+sftp.json
+
 # ignore the tmplcache and vendor folders in the app
 vendor
 tmplcache
