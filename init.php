@@ -34,13 +34,17 @@ $log = new Logger('my_logger'); // A new Monolog logger is created // The logger
     die($twig->render('error_internal.html.twig')); // The error template is rendered and sent to the client
 }; */
 
-if ($_SERVER['SERVER_NAME'] == 'day07slimfirst.org') {
+if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
     // Database connection setup //  the library won't actually establish a database connection until you run your first query
         DB::$dbName = 'cp5114_team4';
         DB::$user = 'cp5114_team4';  
         DB::$password = '=w%S0M.pGNq_';
         DB::$host = 'fsd13.ca'; 
-    } 
+  } else { // hosted on external server
+        DB::$dbName = 'cp5114_team4';
+        DB::$user = 'cp5114_team4';  
+        DB::$password = '=w%S0M.pGNq_'; 
+    }
 
 /* $db_error_handler = function ($params) {
     global $log, $container;
