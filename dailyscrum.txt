@@ -1,20 +1,21 @@
-2025/03/18 Shao Hang
+2025/03/18 
+Shao Hang
 1. Done since last scrum
    Mockup changes (simplified) and remove unnecessary parts.
 2. Plan until next Scrum
    Watch class recordings + initiate to Laravel 
 3. Need assistance / figure things out
    Figure out how Laravel works.
-
-2025/03/18 Qi He
+------------------------------------------
+ Qi He
 1. Done since last scrum
     Fixed some errors and made some adjustments to proposal regarding use-case diagram and URLs
 2. Plan until next Scrum
    Keep working on recordings and learning materials needed for project in order to avoid redoing unecessary work in the future
 3. Need assistance / figure things out
    TBD
- 
-2025/03/18 Ritu Arora
+ ------------------------------------------
+ Ritu Arora
 1. Done since last scrum
 Fixed the proposal and submitted it
 Created the DB tables
@@ -23,3 +24,230 @@ Watch Videos provided by greg
 Create user-stories on Trello board
 3. Need assistance / figure things out
 Make a decision on : PHPslim or Laravel?
+
+====================================================
+2025/03/19 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/20 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/21 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/22 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/23 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/24 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/25 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/26 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
+2025/03/27 Shao Hang
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+3. Need assistance / figure things out
+------------------------------------------------------
+
+ Qi He
+1. Done since last scrum
+
+2. Plan until next Scrum
+   
+3. Need assistance / figure things out
+
+ ---------------------------------------------------------
+ Ritu Arora
+1. Done since last scrum
+
+2. Plan until next Scrum
+
+
+3. Need assistance / figure things out
+
+==========================================================
