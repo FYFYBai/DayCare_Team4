@@ -28,28 +28,30 @@ Make a decision on : PHPslim or Laravel?
 ====================================================
 2025/03/19 Shao Hang
 1. Done since last scrum
-
+Watched db and hosting videos. Checked out blade template.
 2. Plan until next Scrum
-
+Need to figure out how it works and check out the stripe api for frontend and backend
 3. Need assistance / figure things out
+Test out blade template + figure out how stripe works
 ------------------------------------------------------
-
- Qi He
+ 
+Qi He
 1. Done since last scrum
-
+ watched hosting videos, and worked with examples from day 7 and 8
 2. Plan until next Scrum
-   
+Continue watching more lectures and hopefully start working on core functionalities
 3. Need assistance / figure things out
-
- ---------------------------------------------------------
- Ritu Arora
+ 
+---------------------------------------------------------
+Ritu Arora
 1. Done since last scrum
-
+Updated proposal, DB, watched hosting videos
+create user-stories for trello board
 2. Plan until next Scrum
-
-
+Watch more videos
+Head-start with our team project - work on register and login pages (role based access)
 3. Need assistance / figure things out
-
+ 
 ==========================================================
 2025/03/20 Shao Hang
 1. Done since last scrum
