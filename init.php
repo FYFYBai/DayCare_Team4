@@ -7,6 +7,7 @@ use Slim\Factory\AppFactory; // used to create the Slim application instance
 use DI\Container; // Container comes from PHP-DI, a dependency injection container
 use Slim\Views\Twig; // Twig and TwigMiddleware are used to integrate Twig (a templating engine) into Slim app
 use Slim\Views\TwigMiddleware;
+use MeekroDB;
 
 // Autoload all dependencies from Composer's vendor directory
 require_once __DIR__ . '/vendor/autoload.php'; // include_once vs require_once - always use require_once because if the file is included more than once, it will only be included once; if the file is not there, it will throw an error. On the other hand, with include_once, if the file is not included, it will not be included without throwing any error.
@@ -24,6 +25,7 @@ $log = new Logger('my_logger'); // A new Monolog logger is created // The logger
 
  $log->pushProcessor(function ($record){
     $record['extra']['ip'] = $_SERVER['REMOTE_ADDR']; // The IP address of the client is added to the log record
+    return $record;
 });
  
 /* // Error handling setup //  the library won't actually handle errors until you run your first error statement
