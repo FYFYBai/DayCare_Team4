@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Register - DayCare System</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script type="text/javascript">
+      // This function gets called once the reCAPTCHA API is loaded
+      var onloadCallback = function() {
+          grecaptcha.render('recaptcha-container', {
+              'sitekey' : '6LdiBfwqAAAAANL4e-jNRI614xcYzHUbHl0X5hc8'
+          });
+      };
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 </head>
 <body>
     <h1>Register</h1>
-    <form action="/register" method="post" enctype="multipart/form-data">
+    <form id="register-form"  action="/register" method="post" enctype="multipart/form-data">
         <label for="name">Name:</label>
         <input type="text" name="name" id="name" required><br>
 
@@ -23,14 +31,34 @@
             <option value="educator">Educator</option>
         </select><br>
 
-        <label for="profile_photo">Profile Photo (optional for educators):</label>
+        <label for="profile_photo">Profile Photo (optional for parents):</label>
         <input type="file" name="profile_photo" id="profile_photo" accept="image/*"><br>
 
-        <!-- ReCaptcha -->
-        <div class="g-recaptcha" data-sitekey="6Ler6PsqAAAAAJymJ4M5tyJttTFZkxqSidzEuqyU"></div><br>
-        // data-sitekey is public—it tells Google which site is making the request.
+        <!-- Container for reCAPTCHA widget -->
+        <div id="recaptcha-container"></div><br>
 
         <button type="submit">Register</button>
     </form>
+    <script type="text/javascript">
+      document.getElementById('register-form').addEventListener('submit', function(e) {
+          // Retrieve the reCAPTCHA response token.
+          var token = grecaptcha.getResponse();
+          console.log("Recaptcha token:", token);
+          if (!token) {
+              e.preventDefault();
+              alert("Please complete the reCAPTCHA challenge.");
+              return false;
+          }
+          // Check if hidden input already exists; if not, create it.
+          if (!document.querySelector("input[name='g-recaptcha-response']")) {
+              var hiddenInput = document.createElement("input");
+              hiddenInput.setAttribute("type", "hidden");
+              hiddenInput.setAttribute("name", "g-recaptcha-response");
+              hiddenInput.setAttribute("value", token);
+              this.appendChild(hiddenInput);
+          }
+          // Continue submitting the form.
+      });
+    </script>
 </body>
 </html>

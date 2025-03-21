@@ -13,7 +13,7 @@ require_once 'init.php';
  */
 function verifyReCaptcha($recaptchaResponse) {
     // Load the secret key securely (you can also set this directly if needed)
-    $secret = getenv('RECAPTCHA_SECRET') ?: 'YOUR_SECRET_KEY';
+    $secret = getenv('RECAPTCHA_SECRET') ?: '6LdiBfwqAAAAAKVUa71C5VQ3-uBA4YtEkF-Gfmdp';
     
     // If no response is provided, immediately fail.
     if (empty($recaptchaResponse)) {
@@ -48,7 +48,6 @@ function verifyReCaptcha($recaptchaResponse) {
     // Check if 'success' exists and is true.
     return isset($responseData->success) && $responseData->success;
 }
-
 
 $app->get('/', function (Request $request, Response $response, $args) {
     // If a user is already logged in, redirect them to the dashboard.
