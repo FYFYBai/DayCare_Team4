@@ -1,10 +1,18 @@
 {
-    "name": "daycaresystem",
+    "name": "team4/daycaresystem",
     "type": "project",
     "authors": [
         {
-            "name": "",
-            "email": ""
+            "name": "Ritu Arora",
+            "email": "Ritu.Arora@johnabbottcollege.net"
+        },
+        {
+            "name": "Shao Hang Li",
+            "email": "--@johnabbottcollege.net"
+        },
+        {
+            "name": "Qi He",
+            "email": "--@johnabbottcollege.net"
         }
     ],
     "config": {

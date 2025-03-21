@@ -1,0 +1,10 @@
+{# conditionally display content based on whether the user is an admin #}
+{% if is_admin %}
+    <p>Welcome, Admin! You have full access.</p>
+    <!-- Show admin-specific controls -->
+    <a href="/admin/settings">Admin Settings</a>
+{% else %}
+    <p>Welcome, Manager! You have limited access.</p>
+    <!-- Show manager-specific controls -->
+    <a href="/manager/children">View Children</a>
+{% endif %}

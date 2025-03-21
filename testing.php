@@ -22,7 +22,8 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
 
 // route renders a Twig template with dynamic values
 $app->get('/hello/{name}/{age}', function (Request $request, Response $response, array $args) use ($container) {
-    $twig = $container->get(Twig::class); // It uses the use ($container) clause to gain access to the DI container to retrieve the Twig instance
+    $twig = $container->get(Twig::class); // This is a closure in php commonly used in middleware or route definitions within the Slim Framework. It uses the use ($container) clause to gain access to the DI container to retrieve the Twig instance
+    // The $container is passed as a dependency, allowing you to get services registered in the container.
     $name = $args['name'];
     $age = $args['age'];
     // $response->getBody()->write("Hello, $name, you are $age y/o");
