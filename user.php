@@ -4,7 +4,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Ramsey\Uuid\Uuid; // For generating UUIDs
-use MeekroDB;
 
 require_once 'init.php';
 
@@ -12,14 +11,44 @@ require_once 'init.php';
  * Helper function to validate ReCaptcha.
  * Replace 'YOUR_SECRET_KEY' with your actual ReCaptcha secret key.
  */
-function verifyReCaptcha($recaptchaResponse)
-{
-    $secret = "YOUR_SECRET_KEY";
-    $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$recaptchaResponse";
-    $response = file_get_contents($url);
+function verifyReCaptcha($recaptchaResponse) {
+    // Load the secret key securely (you can also set this directly if needed)
+    $secret = getenv('RECAPTCHA_SECRET') ?: 'YOUR_SECRET_KEY';
+    
+    // If no response is provided, immediately fail.
+    if (empty($recaptchaResponse)) {
+        return false;
+    }
+    
+    // Prepare POST data for the ReCaptcha verification
+    $data = http_build_query([
+        'secret'   => $secret,
+        'response' => $recaptchaResponse,
+        // 'remoteip' => $_SERVER['REMOTE_ADDR'], // Optionally include the client's IP
+    ]);
+    
+    // Set up cURL options
+    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    // Execute the request // cURL Request function sends a POST request to Google's ReCaptcha verification API using cURL with the required parameters
+    $response = curl_exec($ch);
+    if(curl_errno($ch)){
+        // Log error if necessary: curl_error($ch)
+        curl_close($ch);
+        return false;
+    }
+    curl_close($ch);
+    
+    // Decode the JSON response
     $responseData = json_decode($response);
-    return $responseData->success;
+    
+    // Check if 'success' exists and is true.
+    return isset($responseData->success) && $responseData->success;
 }
+
 
 $app->get('/', function (Request $request, Response $response, $args) {
     // If a user is already logged in, redirect them to the dashboard.
@@ -89,10 +118,10 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     }
 
     // Validate ReCaptcha (assuming the form sends 'g-recaptcha-response').
-    $recaptchaResponse = $data['g-recaptcha-response'] ?? '';
+    $recaptchaResponse = $data['g-recaptcha-response'] ?? ''; // The ?? '' operator ensures that if the field isn’t set (for example, if something went wrong on the client-side), $recaptchaResponse will be an empty string rather than causing an error.
     if (!verifyReCaptcha($recaptchaResponse)) {
         $response->getBody()->write("ReCaptcha verification failed.");
-        return $response->withStatus(400);
+        return $response->withStatus(400); // A 400 status indicates that the client submitted a request that doesn't meet the required criteria—in this case, failing the ReCaptcha test.
     }
 
     // For self-registration, only allow parents or educators (managers are added manually).

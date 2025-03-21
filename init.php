@@ -1,5 +1,9 @@
 <?php
 // set up a container, register Twig, create the app from the container, add middleware, define routes, and finally run the app.
+
+// Autoload all dependencies from Composer's vendor directory
+require_once __DIR__ . '/vendor/autoload.php'; // include_once vs require_once - always use require_once because if the file is included more than once, it will only be included once; if the file is not there, it will throw an error. On the other hand, with include_once, if the file is not included, it will not be included without throwing any error.
+
 // Namespace imports or import of the necessary classes and interfaces
 //use Psr\Http\Message\ResponseInterface as Response; //  interfaces for HTTP messages
 //use Psr\Http\Message\ServerRequestInterface as Request; //  interfaces for HTTP messages
@@ -7,12 +11,13 @@ use Slim\Factory\AppFactory; // used to create the Slim application instance
 use DI\Container; // Container comes from PHP-DI, a dependency injection container
 use Slim\Views\Twig; // Twig and TwigMiddleware are used to integrate Twig (a templating engine) into Slim app
 use Slim\Views\TwigMiddleware;
-use MeekroDB;
 use Ramsey\Uuid\Uuid;
 
+use Dotenv\Dotenv;
 
-// Autoload all dependencies from Composer's vendor directory
-require_once __DIR__ . '/vendor/autoload.php'; // include_once vs require_once - always use require_once because if the file is included more than once, it will only be included once; if the file is not there, it will throw an error. On the other hand, with include_once, if the file is not included, it will not be included without throwing any error.
+// Load environment variables from the .env file in the project root
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 // Logging setup //  the library won't actually create a log file until you run your first log statement
 use Monolog\Logger; // Monolog is a logging library for PHP
