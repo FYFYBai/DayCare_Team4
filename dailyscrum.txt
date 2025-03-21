@@ -55,10 +55,11 @@ Head-start with our team project - work on register and login pages (role based 
 ==========================================================
 2025/03/20 Shao Hang
 1. Done since last scrum
-
+Started on the frontend version of Stripe
 2. Plan until next Scrum
-
+Finish the frontend and backend of Stripe before Sunday
 3. Need assistance / figure things out
+Connections and backend of Stripe
 ------------------------------------------------------
 
  Qi He
