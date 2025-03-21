@@ -7,6 +7,8 @@ use Slim\Factory\AppFactory; // used to create the Slim application instance
 use DI\Container; // Container comes from PHP-DI, a dependency injection container
 use Slim\Views\Twig; // Twig and TwigMiddleware are used to integrate Twig (a templating engine) into Slim app
 use Slim\Views\TwigMiddleware;
+use MeekroDB;
+use Ramsey\Uuid\Uuid;
 
 // Autoload all dependencies from Composer's vendor directory
 require_once __DIR__ . '/vendor/autoload.php'; // include_once vs require_once - always use require_once because if the file is included more than once, it will only be included once; if the file is not there, it will throw an error. On the other hand, with include_once, if the file is not included, it will not be included without throwing any error.
@@ -24,6 +26,7 @@ $log = new Logger('my_logger'); // A new Monolog logger is created // The logger
 
  $log->pushProcessor(function ($record){
     $record['extra']['ip'] = $_SERVER['REMOTE_ADDR']; // The IP address of the client is added to the log record
+    return $record;
 });
  
 /* // Error handling setup //  the library won't actually handle errors until you run your first error statement
@@ -34,6 +37,8 @@ $log = new Logger('my_logger'); // A new Monolog logger is created // The logger
     die($twig->render('error_internal.html.twig')); // The error template is rendered and sent to the client
 }; */
 
+//  using MeekroDB for database interactions instead of traditional PDO
+// MeekroDB replace PDO-style calls with MeekroDB's simple static method style
 if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
     // Database connection setup //  the library won't actually establish a database connection until you run your first query
         DB::$dbName = 'cp5114_team4';
@@ -58,14 +63,16 @@ if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
 };
  */
 // Create Container
-$container = new Container(); // A new dependency injection container is created
+$container = new Container(); // A new dependency injection container (service container or central registry) is created to hold instances of classes or services that this application needs
 AppFactory::setContainer($container); // The container is then set for the Slim AppFactory, allowing Slim to resolve dependencies from it
 
 // Set view in Container
-$container->set(Twig::class, function() { // A new Twig instance is created and set as the view for the Slim application //  registers Twig in the container // 
+$container->set(Twig::class, function() { // A new Twig instance is created and set as the view for the Slim application //  registers Twig as a service in the container 
+    // The term "service" refers to any object or class that is managed by a service container (also known as a dependency injection container)
     return Twig::create(__DIR__ . '/templates', ['cache' => __DIR__ . '/tmplcache', 'debug' => true]); //  tells the container to instantiate Twig using templates from the templates folder
 });
 
+// In Slim, the app is the main application object that handles the routing and execution of your application. It is the central point where you define routes, middleware, and configure your services. The app is created using:
 // Create App from container
 $app = AppFactory::createFromContainer($container); // This creates the Slim application instance using the container you set up // The app now has access to the container's dependencies
 

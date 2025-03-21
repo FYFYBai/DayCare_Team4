@@ -57,21 +57,6 @@ CREATE TABLE payments (
     FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB;
 
-/* -- 6. Event_Attendees Table
-
-CREATE TABLE event_attendees (
-    event_id INT NOT NULL,
-    user_id INT NOT NULL,
-    isDeleted TINYINT(1) NOT NULL DEFAULT 0,
-    PRIMARY KEY (event_id, user_id),
-    FOREIGN KEY (event_id) REFERENCES events(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS event_attendees;
-
- */
-
  -- 6. Event_Children Table
 CREATE TABLE event_children (
     event_id INT NOT NULL,
@@ -88,6 +73,11 @@ ALTER TABLE events
     ADD COLUMN created_by INT NOT NULL,
     ADD FOREIGN KEY (created_by) REFERENCES users(id);
 
+-- alter table user to add some new columns
+ALTER TABLE users ADD COLUMN isAdmin TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE users ADD COLUMN profile_photo_path VARCHAR(255);
+ALTER TABLE users ADD COLUMN reset_token VARCHAR(64);
+ALTER TABLE users ADD COLUMN activation_token VARCHAR(64);
 
 Soft Delete Column:
 The isDeleted column (with a default value of 0) is used to mark a record as "deleted" without physically removing it from the database. Your application queries should filter by isDeleted = 0 to exclude soft-deleted records.
