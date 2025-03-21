@@ -3,6 +3,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Ramsey\Uuid\Uuid; // For generating UUIDs
+use MeekroDB;
 
 require_once 'init.php';
 
@@ -44,7 +45,7 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     // Validate required fields.
     if (empty($data['name']) || empty($data['email']) || empty($data['password']) || empty($data['role'])) {
         $response->getBody()->write("All fields (name, email, password, role) are required.");
-        return $response->withStatus(400);
+        return $response->withStatus(400); // Bad request
     }
 
     $name     = trim($data['name']);
