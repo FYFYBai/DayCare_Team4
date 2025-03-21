@@ -64,11 +64,10 @@ Connections and backend of Stripe
 
  Qi He
 1. Done since last scrum
-
+Created method to verify if a user is admin or manager, watched recordings
 2. Plan until next Scrum
-   
+finish the basic design of user management and child data management
 3. Need assistance / figure things out
-
  ---------------------------------------------------------
  Ritu Arora
 1. Done/not done since last scrum
