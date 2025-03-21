@@ -1,4 +1,5 @@
 <?php
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -11,7 +12,8 @@ require_once 'init.php';
  * Helper function to validate ReCaptcha.
  * Replace 'YOUR_SECRET_KEY' with your actual ReCaptcha secret key.
  */
-function verifyReCaptcha($recaptchaResponse) {
+function verifyReCaptcha($recaptchaResponse)
+{
     $secret = "YOUR_SECRET_KEY";
     $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$recaptchaResponse";
     $response = file_get_contents($url);
@@ -24,7 +26,7 @@ $app->get('/', function (Request $request, Response $response, $args) {
     if (isset($_SESSION['user_id'])) {
         return $response->withHeader('Location', '/dashboard')->withStatus(302);
     }
-    
+
     // Otherwise, render the home page (welcome/landing page)
     return $this->get(Slim\Views\Twig::class)->render($response, 'home.html.twig');
 });
@@ -60,10 +62,17 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     }
 
     // Validate password (minimum 8 characters).
-    if (strlen($password) < 8) {
-        $response->getBody()->write("Password must be at least 8 characters long.");
+    if (
+        strlen($password) < 8 ||
+        !preg_match('/[A-Z]/', $password) ||
+        !preg_match('/[a-z]/', $password) ||
+        !preg_match('/[0-9]/', $password) ||
+        !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)
+    ) {
+        $response->getBody()->write("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
         return $response->withStatus(400);
     }
+
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Validate role.
@@ -131,7 +140,7 @@ $app->post('/register', function (Request $request, Response $response, $args) {
         'isAdmin'           => $isAdmin,
         'activation_status' => 0,
         'isDeleted'         => 0,
-        'profile_photo_path'=> $filename, // This requires that your users table has this column.
+        'profile_photo_path' => $filename, // This requires that your users table has this column.
         'created_at'        => date("Y-m-d H:i:s")
     ]);
 
