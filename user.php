@@ -4,8 +4,43 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Ramsey\Uuid\Uuid; // For generating UUIDs
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
+require_once __DIR__ . '/vendor/autoload.php';
 require_once 'init.php';
+
+// Function to send activation email using PHPMailer and Mailtrap
+function sendActivationEmail($toEmail, $toName, $activationLink) {
+    $mail = new PHPMailer(true);
+
+    try {
+        // Use SMTP
+        $mail->isSMTP();
+        // Set your Mailtrap SMTP server details (find these in your Mailtrap dashboard)
+        $mail->Host       = 'sandbox.smtp.mailtrap.io';      // typically smtp.mailtrap.io
+        $mail->SMTPAuth   = true;
+        $mail->Username   = '5e6d6d4e086657';  // from Mailtrap
+        $mail->Password   = 'b855d8085d5af3';  // from Mailtrap
+        $mail->Port       = 2525;                     // or the port provided by Mailtrap (2525, 587, or 25)
+        
+        // Set sender and recipient details
+        $mail->setFrom('no-reply@yourdomain.com', 'DayCare System');
+        $mail->addAddress($toEmail, $toName);
+        
+        // Email content settings
+        $mail->isHTML(true);
+        $mail->Subject = 'Activate Your Account';
+        $mail->Body    = "Click the following link to activate your account: <a href='{$activationLink}'>Activate Account</a>";
+        $mail->AltBody = "Copy and paste this link in your browser to activate your account: {$activationLink}";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Activation email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
+    }
+}
 
 /**
  * Helper function to validate ReCaptcha.
@@ -176,11 +211,43 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     DB::update('users', ['activation_token' => $activation_token], "email=%s", $email);
 
     // Send an activation email with the activation link.
-    $activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
-    mail($email, "Activate Your Account", "Click this link to activate your account: $activation_link");
+    //$activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
+    $activation_link = "http://daycaresystem.org:8080/activate?token=$activation_token";
+   // In your registration route, replace the mail() call with:
+    if(sendActivationEmail($email, $name, $activation_link)){
+        $message = "Registration successful. Please check your email to activate your account.";
+    } else {
+        $message = "Registration successful, but activation email failed to send.";
+    }
 
-    $response->getBody()->write("Registration successful. Please check your email to activate your account.");
+    $response->getBody()->write($message);
     return $response;
+});
+
+$app->get('/activate', function (Request $request, Response $response, $args) {
+    // Retrieve the token from the query parameters
+    $token = $request->getQueryParams()['token'] ?? null;
+    
+    if (!$token) {
+        $response->getBody()->write("No activation token provided.");
+        return $response->withStatus(400);
+    }
+    
+    // Look up the user with the provided token and update activation_status
+    $updated = DB::update('users', ['activation_status' => 1], "activation_token=%s", $token);
+    
+    if ($updated) {
+        return $response->withHeader('Location', '/login')->withStatus(302);
+    } else {
+        $response->getBody()->write("Invalid or expired activation token.");
+        return $response->withStatus(400);
+    }
+    
+    return $response;
+});
+
+$app->get('/login', function (Request $request, Response $response, $args) {
+    return $this->get(Twig::class)->render($response, 'login.html.twig');
 });
 
 /**
@@ -204,12 +271,12 @@ $app->post('/login', function (Request $request, Response $response, $args) {
         return $response->withStatus(400);
     }
 
-    // Validate ReCaptcha on login as well.
+  /*   // Validate ReCaptcha on login as well.
     $recaptchaResponse = $data['g-recaptcha-response'] ?? '';
     if (!verifyReCaptcha($recaptchaResponse)) {
         $response->getBody()->write("ReCaptcha verification failed.");
         return $response->withStatus(400);
-    }
+    } */
 
     // Fetch user details.
     $user = DB::queryFirstRow("SELECT * FROM users WHERE email = %s AND isDeleted = 0", $email);
@@ -237,7 +304,7 @@ $app->post('/login', function (Request $request, Response $response, $args) {
  */
 $app->get('/dashboard', function (Request $request, Response $response, $args) {
     return $this->get(Twig::class)->render($response, 'dashboard.html.twig', [
-        'is_admin' => $_SESSION['is_admin']
+        'is_admin' => $_SESSION['is_admin'] ?? false // null coalescing operator?? - If $_SESSION['is_admin'] is set and is not null, assign its value to $isAdmin.
     ]);
 });
 

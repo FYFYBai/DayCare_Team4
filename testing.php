@@ -8,6 +8,7 @@ use Slim\Views\Twig; // Twig and TwigMiddleware are used to integrate Twig (a te
 use Slim\Views\TwigMiddleware;
 use Ramsey\Uuid\Uuid;
 
+
 // faildb url
 $app->get('/faildb', function ($request, $response, $args) {
     DB::query("SELECT *** FROM wrong"); 

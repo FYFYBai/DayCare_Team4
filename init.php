@@ -1,5 +1,6 @@
 <?php
 // set up a container, register Twig, create the app from the container, add middleware, define routes, and finally run the app.
+session_start();
 
 // Autoload all dependencies from Composer's vendor directory
 require_once __DIR__ . '/vendor/autoload.php'; // include_once vs require_once - always use require_once because if the file is included more than once, it will only be included once; if the file is not there, it will throw an error. On the other hand, with include_once, if the file is not included, it will not be included without throwing any error.
