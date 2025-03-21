@@ -6,6 +6,8 @@ use Slim\Factory\AppFactory; // used to create the Slim application instance
 use DI\Container; // Container comes from PHP-DI, a dependency injection container
 use Slim\Views\Twig; // Twig and TwigMiddleware are used to integrate Twig (a templating engine) into Slim app
 use Slim\Views\TwigMiddleware;
+use MeekroDB;
+use Ramsey\Uuid\Uuid;
 
 // faildb url
 $app->get('/faildb', function ($request, $response, $args) {

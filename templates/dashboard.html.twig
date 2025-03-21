@@ -1,10 +1,20 @@
-{# conditionally display content based on whether the user is an admin #}
-{% if is_admin %}
-    <p>Welcome, Admin! You have full access.</p>
-    <!-- Show admin-specific controls -->
-    <a href="/admin/settings">Admin Settings</a>
-{% else %}
-    <p>Welcome, Manager! You have limited access.</p>
-    <!-- Show manager-specific controls -->
-    <a href="/manager/children">View Children</a>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - DayCare System</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Welcome to your dashboard!</p>
+
+    {% if is_admin %}
+        <p>You are logged in as an admin.</p>
+        <p><a href="/admin/create-manager">Create a Manager Account</a></p>
+    {% else %}
+        <p>You are logged in as a regular user.</p>
+    {% endif %}
+
+    <p><a href="/logout">Logout</a></p>
+</body>
+</html>
