@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - DayCare System</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <h1>Register</h1>
+    <form action="/register" method="post" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br>
+
+        <label for="role">Role:</label>
+        <select name="role" id="role" required>
+            <option value="parent">Parent</option>
+            <option value="educator">Educator</option>
+        </select><br>
+
+        <label for="profile_photo">Profile Photo (optional for educators):</label>
+        <input type="file" name="profile_photo" id="profile_photo" accept="image/*"><br>
+
+        <!-- ReCaptcha -->
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div><br>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

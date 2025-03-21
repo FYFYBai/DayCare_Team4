@@ -55,28 +55,29 @@ Head-start with our team project - work on register and login pages (role based 
 ==========================================================
 2025/03/20 Shao Hang
 1. Done since last scrum
-
+Started on the frontend version of Stripe
 2. Plan until next Scrum
-
+Finish the frontend and backend of Stripe before Sunday
 3. Need assistance / figure things out
+Connections and backend of Stripe
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+Created method to verify if a user is admin or manager, watched recordings
 2. Plan until next Scrum
-   
+finish the basic design of user management and child data management
 3. Need assistance / figure things out
-
  ---------------------------------------------------------
  Ritu Arora
-1. Done since last scrum
-
+1. Done/not done since last scrum
+Set up remote hosting for teams project
+Set up base code to use slim and twig on git and remote host
+Not yet started with Role Based Access Controls (RBAC) for teams project
 2. Plan until next Scrum
-
-
+RBAC
+watch OneDrive videos
 3. Need assistance / figure things out
-
 ==========================================================
 2025/03/21 Shao Hang
 1. Done since last scrum
@@ -96,12 +97,15 @@ Head-start with our team project - work on register and login pages (role based 
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+User Registration
+ReCaptcha Integration
+Password reset
+User Login
 2. Plan until next Scrum
-
-
+Test and polish above features
+Enhance UI design and make it responsive as well
 3. Need assistance / figure things out
-
+Profile
 ==========================================================
 2025/03/22 Shao Hang
 1. Done since last scrum

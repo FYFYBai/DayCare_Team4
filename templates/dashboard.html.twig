@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - DayCare System</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Welcome to your dashboard!</p>
+
+    {% if is_admin %}
+        <p>You are logged in as an admin.</p>
+        <p><a href="/admin/create-manager">Create a Manager Account</a></p>
+    {% else %}
+        <p>You are logged in as a regular user.</p>
+    {% endif %}
+
+    <p><a href="/logout">Logout</a></p>
+</body>
+</html>
