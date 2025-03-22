@@ -6,6 +6,7 @@ require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/helpers.php';
 
 // Modularize routes by requiring individual route files
+require_once __DIR__ . '/routes/home.php';
 require_once __DIR__ . '/routes/registration.php';
 require_once __DIR__ . '/routes/auth.php';
 require_once __DIR__ . '/routes/password_reset.php';

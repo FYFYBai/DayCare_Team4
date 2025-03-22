@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome to DayCare Management</title>
-</head>
-<body>
+{% extends "master.html.twig" %}
+
+{% block title %}Welcome to DayCare Management{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
     <h1>Welcome to DayCare Management System</h1>
     <p>This system allows parents and educators to manage daycare details efficiently.</p>
     <p>
-        <a href="/login">Login</a> | 
-        <a href="/register">Register</a>
+        <a href="/login" class="btn btn-primary me-2">Login</a>
+        <a href="/register" class="btn btn-secondary">Register</a>
     </p>
-</body>
-</html>
+</div>
+{% endblock %}

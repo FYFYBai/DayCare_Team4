@@ -18,3 +18,10 @@ project-root/
  │    └── educator-dashboard.html.twig
  └── vendor/
       └── (Composer packages)
+ ├── public/
+ │    ├── index.php         # Your front controller (entry point for the app)
+ │    ├── styles.css        # Static CSS file (or styles folder with multiple files)
+ │    ├── js/               # JavaScript files
+ │    ├── images/           # Image files
+ │    └── (other static assets)
+

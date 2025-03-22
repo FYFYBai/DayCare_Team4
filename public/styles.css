@@ -1,0 +1,90 @@
+/* Dreamy Skies Palette
+   Warm:     #FFB3BA, #FF677D
+   Cool:     #A2DFF7, #F6F6F6
+*/
+
+/* Global Styles */
+body {
+    background-color: #F6F6F6; /* Soft, light background */
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for content with some padding */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styling */
+header {
+    background-color: #FFB3BA; /* Warm pink */
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Navbar styling (if applicable) */
+nav {
+    background-color: #FF677D; /* A deeper warm shade */
+    padding: 10px 0;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #A2DFF7; /* Cool blue */
+    color: #333;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #FF677D;
+    border-color: #FF677D;
+}
+
+.btn-primary:hover {
+    background-color: #FFB3BA;
+    border-color: #FFB3BA;
+}
+
+/* Forms */
+.form-control {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+select,
+input[type="file"] {
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+    color: #FF677D;
+}
+
+/* Links */
+a {
+    color: #FF677D;
+}
+
+a:hover {
+    color: #FFB3BA;
+}
