@@ -130,9 +130,10 @@ Fixed Auth feature (Register, email activation, recaptcha, login, log out, reset
 Refactored project structure
 2. Plan until next Scrum
 Front-end of the application
+Improve structure of my templates
 
 3. Need assistance / figure things out
-
+Recaptcha feature - client-side key hard-coded, want to read it from .env file, not able to fix it
 ==========================================================
 2025/03/23 Shao Hang
 1. Done since last scrum
