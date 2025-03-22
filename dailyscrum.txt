@@ -90,9 +90,9 @@ Testing and it never works, watch more videos and how they do it.
 
  Qi He
 1. Done since last scrum
-
+Redo part of the management and child data management
 2. Plan until next Scrum
-   
+Finalize and test them before sunday night
 3. Need assistance / figure things out
 
  ---------------------------------------------------------
@@ -118,9 +118,9 @@ Profile
 
  Qi He
 1. Done since last scrum
-
+Redo part of the management and child data management
 2. Plan until next Scrum
-   
+Finalize and test them before sunday night
 3. Need assistance / figure things out
 
  ---------------------------------------------------------
