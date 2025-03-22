@@ -79,5 +79,10 @@ ALTER TABLE users ADD COLUMN profile_photo_path VARCHAR(255);
 ALTER TABLE users ADD COLUMN reset_token VARCHAR(64);
 ALTER TABLE users ADD COLUMN activation_token VARCHAR(64);
 
+ALTER TABLE children ADD COLUMN educator_id INT NOT NULL;
+ALTER TABLE users ADD COLUMN reset_expires DATETIME DEFAULT NULL;
+
+
+
 Soft Delete Column:
 The isDeleted column (with a default value of 0) is used to mark a record as "deleted" without physically removing it from the database. Your application queries should filter by isDeleted = 0 to exclude soft-deleted records.

@@ -418,10 +418,6 @@ $app->post('/reset-password', function (Request $request, Response $response, $a
 });
 
 $app->get('/educator-dashboard', function (Request $request, Response $response, $args) {
-    return $this->get(Twig::class)->render($response, 'educator-dashboard.html.twig');
-})->add($checkRoleMiddleware('educator'));
-
-$app->get('/educator-dashboard', function (Request $request, Response $response, $args) {
     // For example, fetch educator info from the session and child profiles from the DB
     $user = DB::queryFirstRow("SELECT * FROM users WHERE id = %d", $_SESSION['user_id']);
     $children = DB::query("SELECT * FROM children WHERE educator_id = %d", $_SESSION['user_id']);
