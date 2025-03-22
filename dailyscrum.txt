@@ -110,9 +110,9 @@ Profile
 ==========================================================
 2025/03/22 Shao Hang
 1. Done since last scrum
-
+Fixed Auth feature (Register, email activation, recaptcha, login, log out, reset password, rba for different users)
 2. Plan until next Scrum
-
+Front-end of the application
 3. Need assistance / figure things out
 ------------------------------------------------------
 
