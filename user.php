@@ -84,6 +84,17 @@ function verifyReCaptcha($recaptchaResponse) {
     return isset($responseData->success) && $responseData->success;
 }
 
+$checkRoleMiddleware = function ($requiredRole) {
+    return function (Request $request, Response $response, $next) use ($requiredRole) {
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== $requiredRole) {
+            $response->getBody()->write("Access Denied.");
+            return $response->withStatus(403);
+        }
+        return $next($request, $response);
+    };
+};
+
+
 $app->get('/', function (Request $request, Response $response, $args) {
     // If a user is already logged in, redirect them to the dashboard.
     if (isset($_SESSION['user_id'])) {
@@ -316,3 +327,107 @@ $app->get('/logout', function (Request $request, Response $response, $args) {
     // Redirect to the login page.
     return $response->withHeader('Location', '/login')->withStatus(302);
 });
+
+$app->get('/forgot-password', function (Request $request, Response $response, $args) {
+    return $this->get(Twig::class)->render($response, 'forgot-password.html.twig');
+});
+
+$app->post('/forgot-password', function (Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $email = trim($data['email']);
+
+    // Check if the email exists in the database
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE email = %s AND isDeleted = 0", $email);
+    if (!$user) {
+        $response->getBody()->write("If the email exists in our system, a password reset link has been sent.");
+        return $response;
+    }
+
+    // Generate a secure reset token (you can also add an expiration time in your DB)
+    $reset_token = bin2hex(random_bytes(32));
+    // Optionally, store an expiration timestamp (e.g., current time + 1 hour)
+    $expires_at = date("Y-m-d H:i:s", strtotime("+1 hour"));
+
+    // Update the user's record with the reset token and expiration time (make sure you have these columns in your users table)
+    DB::update('users', [
+        'reset_token' => $reset_token,
+        'reset_expires' => $expires_at
+    ], "email=%s", $email);
+
+    // Build the password reset link.
+    $reset_link = "https://daycaresystem.com:8080/reset-password?token=" . $reset_token;
+
+    // Send the reset email (you can create a sendResetEmail() function similar to sendActivationEmail())
+    if (sendActivationEmail($email, $user['name'], $reset_link)) { // For simplicity, reuse the function if content is similar.
+        $message = "If the email exists, a password reset link has been sent.";
+    } else {
+        $message = "An error occurred sending the password reset email.";
+    }
+
+    $response->getBody()->write($message);
+    return $response;
+});
+
+$app->get('/reset-password', function (Request $request, Response $response, $args) {
+    $token = $request->getQueryParams()['token'] ?? null;
+    if (!$token) {
+        $response->getBody()->write("Invalid password reset link.");
+        return $response->withStatus(400);
+    }
+    // Render the form passing the token to the template
+    return $this->get(Twig::class)->render($response, 'reset-password.html.twig', [
+        'token' => $token
+    ]);
+});
+
+$app->post('/reset-password', function (Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $token = $data['token'] ?? null;
+    $password = $data['password'] ?? '';
+    $password_confirm = $data['password_confirm'] ?? '';
+
+    if (!$token) {
+        $response->getBody()->write("No reset token provided.");
+        return $response->withStatus(400);
+    }
+
+    if ($password !== $password_confirm) {
+        $response->getBody()->write("Passwords do not match.");
+        return $response->withStatus(400);
+    }
+
+    // Validate password strength here if needed
+
+    // Retrieve the user record by reset token, and also check that the token hasn't expired
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE reset_token = %s AND reset_expires >= NOW()", $token);
+    if (!$user) {
+        $response->getBody()->write("Invalid or expired reset token.");
+        return $response->withStatus(400);
+    }
+
+    // Update the password (and clear the reset token and expiration)
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    DB::update('users', [
+        'password' => $hashedPassword,
+        'reset_token' => null,
+        'reset_expires' => null
+    ], "id=%d", $user['id']);
+
+    $response->getBody()->write("Password updated successfully. You may now log in.");
+    return $response;
+});
+
+$app->get('/educator-dashboard', function (Request $request, Response $response, $args) {
+    return $this->get(Twig::class)->render($response, 'educator-dashboard.html.twig');
+})->add($checkRoleMiddleware('educator'));
+
+$app->get('/educator-dashboard', function (Request $request, Response $response, $args) {
+    // For example, fetch educator info from the session and child profiles from the DB
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE id = %d", $_SESSION['user_id']);
+    $children = DB::query("SELECT * FROM children WHERE educator_id = %d", $_SESSION['user_id']);
+    
+    return $this->get(Twig::class)->render($response, 'educator-dashboard.html.twig', [
+        'user'     => $user,
+        'children' => $children
+    ]);
+})->add($checkRoleMiddleware('educator')); // Optionally add middleware to restrict to educators.
