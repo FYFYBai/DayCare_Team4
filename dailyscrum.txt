@@ -127,6 +127,7 @@ Profile
  Ritu Arora
 1. Done since last scrum
 Fixed Auth feature (Register, email activation, recaptcha, login, log out, reset password, rba for different users)
+Refactored project structure
 2. Plan until next Scrum
 Front-end of the application
 
