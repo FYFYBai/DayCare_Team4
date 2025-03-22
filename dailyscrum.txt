@@ -81,10 +81,11 @@ watch OneDrive videos
 ==========================================================
 2025/03/21 Shao Hang
 1. Done since last scrum
-
+Redo Frontend of Stripe since it was not correct.
 2. Plan until next Scrum
-
+Redo the frontend stripe + start the backend of Stripe
 3. Need assistance / figure things out
+Testing and it never works, watch more videos and how they do it.
 ------------------------------------------------------
 
  Qi He
