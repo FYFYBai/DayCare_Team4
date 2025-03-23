@@ -138,10 +138,11 @@ Recaptcha feature - client-side key hard-coded, want to read it from .env file, 
 ==========================================================
 2025/03/23 Shao Hang
 1. Done since last scrum
-
+Finished frontend of payment + testing
 2. Plan until next Scrum
-
+Need to create payment history for parents + child profile management
 3. Need assistance / figure things out
+List all the payment history and integrate it in the dashboard
 ------------------------------------------------------
 
  Qi He
