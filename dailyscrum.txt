@@ -110,10 +110,11 @@ Profile
 ==========================================================
 2025/03/22 Shao Hang
 1. Done since last scrum
-
+N/A (sick went to the hospital)
 2. Plan until next Scrum
-
+N/A (sick), continue what I previously said for the Stripe payment
 3. Need assistance / figure things out
+N/A (sick)
 ------------------------------------------------------
 
  Qi He
