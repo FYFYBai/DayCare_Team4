@@ -89,7 +89,7 @@ $app->post('/checkout', function (Request $request, Response $response, $args) u
         // Log the error
         $logger->error('Stripe checkout failed: ' . $e->getMessage());
         
-        // If payment was created, mark it as failed
+        // If the payment was created, mark it as failed
         if (isset($paymentId)) {
             DB::update('payments', [
                 'payment_status' => 'failed'
@@ -130,14 +130,14 @@ $app->get('/payment-success', function (Request $request, Response $response) us
 
 // fucntion to calculate the payment amount
 function calculatePaymentAmount($userId, $inputChildrenCount = null) {
-    // Get user information (we'll keep this for reference)
+    // Get user information
     $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
     
     // Determine child count (custom or from database)
     $childrenCount = 1; // Default to at least 1 child
     
     if ($inputChildrenCount !== null) {
-        // Use custom child count if provided
+        // Use inputted child count
         $childrenCount = max(1, (int)$inputChildrenCount); // Ensure at least 1
     } else {
         // Otherwise get actual children count from database
@@ -146,13 +146,13 @@ function calculatePaymentAmount($userId, $inputChildrenCount = null) {
     }
     
     // Registration fee per child
-    $registrationFee = 100.00; // Set your fee amount here
+    $registrationFee = 100.00;
     
-    // Calculate total (simply multiply fee by number of children)
+    // Calculate total (multiply fee by the number of children)
     $totalAmount = $registrationFee * $childrenCount;
     $totalAmountCents = (int)($totalAmount * 100);
     
-    // Prepare line items for Stripe (simplified to a single item)
+    // Prepare line items for Stripe
     $lineItems = [
         [
             "quantity" => $childrenCount,
@@ -167,7 +167,7 @@ function calculatePaymentAmount($userId, $inputChildrenCount = null) {
     ];
     
     return [
-        'baseRegistrationFee' => $registrationFee, // Fee per child
+        'baseRegistrationFee' => $registrationFee,
         'childrenCount' => $childrenCount,
         'totalAmount' => $totalAmount,
         'totalAmountCents' => $totalAmountCents,
