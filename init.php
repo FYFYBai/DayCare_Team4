@@ -25,12 +25,6 @@ $log->pushProcessor(function ($record) {
     return $record;
 });
 
-// Register Logger (might remove, TODO:testing)
-$container->set(Logger::class, function() use ($log) {
-    return $log;
-});
-
-
 // Setup database using MeekroDB (adjust as needed)
 if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
     DB::$dbName = 'cp5114_team4';
@@ -59,7 +53,8 @@ $container->set(Twig::class, function() {
 $app = AppFactory::createFromContainer($container);
 
 // Set base path if the app is in a subdirectory (uncomment and adjust if needed)
-// $app->setBasePath('/teamsproject');
+//$app->setBasePath('/teamsproject');
+$app->setBasePath('/daycaresystem/DayCare_Team4');
 
 // Add Twig middleware for rendering templates
 $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
@@ -67,3 +62,8 @@ $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
 // Add routing and error middleware
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
+
+// Register Logger (might remove, TODO:testing)
+$container->set(Logger::class, function() use ($log) {
+    return $log;
+});
