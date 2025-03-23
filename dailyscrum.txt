@@ -154,9 +154,10 @@ Recaptcha feature - client-side key hard-coded, want to read it from .env file, 
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+Front-end of the application (Responsive UI) - Home page
+Improve structure of my templates
 2. Plan until next Scrum
-
+Educator dashboard and Manager dashboard.
 
 3. Need assistance / figure things out
 
