@@ -154,3 +154,22 @@
 		</div>
 	</section>
 {% endblock %}
+{% block addJS %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Select all nav links inside the collapsible navbar
+  var navLinks = document.querySelectorAll('.navbar-collapse .nav-link');
+  var collapseEl = document.querySelector('.navbar-collapse');
+
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function () {
+      // If the collapse element is shown, hide it.
+      var bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
+      if (bsCollapse && collapseEl.classList.contains('show')) {
+        bsCollapse.hide();
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
