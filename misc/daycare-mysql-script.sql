@@ -82,7 +82,24 @@ ALTER TABLE users ADD COLUMN activation_token VARCHAR(64);
 ALTER TABLE children ADD COLUMN educator_id INT NOT NULL;
 ALTER TABLE users ADD COLUMN reset_expires DATETIME DEFAULT NULL;
 
-
-
 Soft Delete Column:
 The isDeleted column (with a default value of 0) is used to mark a record as "deleted" without physically removing it from the database. Your application queries should filter by isDeleted = 0 to exclude soft-deleted records.
+
+ALTER TABLE users MODIFY COLUMN role ENUM('parent', 'educator', 'manager', 'admin') NOT NULL;
+
+
+-- Insert two educators
+INSERT INTO users (name, email, password, role, isAdmin, activation_status, isDeleted, profile_photo_path, created_at)
+VALUES 
+('Educator One', 'educator1@example.com', '$2y$10$ICYFkD05U/KU4uufSA9GwOVe/IiasQVJZkfRIQqu7p07ZDkPJzhcW', 'educator', 0, 1, 0, 'default.png', NOW()), -- Educator123!
+('Educator Two', 'educator2@example.com', '$2y$10$Rsx27IlJjS68roR6gFa3du6o3B2vnWAyxEEg6RrooyiTXxVMXSLkS', 'educator', 0, 1, 0, 'default.png', NOW()); -- Educator456!
+
+-- Insert one manager
+INSERT INTO users (name, email, password, role, isAdmin, activation_status, isDeleted, profile_photo_path, created_at)
+VALUES 
+('Manager One', 'manager1@example.com', '$2y$10$o0SxebghsaJLeVXhyXV5MeESye5znKgNrQHK1545fI4Gv6beAHAY2', 'manager', 0, 1, 0, 'default.png', NOW()); -- Manager123!
+
+-- Insert one admin
+INSERT INTO users (name, email, password, role, isAdmin, activation_status, isDeleted, profile_photo_path, created_at)
+VALUES 
+('Admin One', 'admin1@example.com', '$2y$10$cYeeUbbRURq466EksgnUYOc32ppIpWyVaKx/X8FUFxTgTBmSP317C', 'admin', 1, 1, 0, 'default.png', NOW()); -- Admin123!
