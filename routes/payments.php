@@ -16,7 +16,9 @@ $app->get('/payment', function (Request $request, Response $response) {
     // Calculate the payment amount
     $paymentDetails = calculatePaymentAmount($userId);
     
-    return $this->get(Twig::class)->render($response, 'payment.html.twig', [
+    // Try the simplified test template first
+    return $this->get(Twig::class)->render($response, 'payment-test.html.twig', [
+        'userId' => $userId,
         'paymentDetails' => $paymentDetails
     ]);
 });
