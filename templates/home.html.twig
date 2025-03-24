@@ -1,15 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome to DayCare Management</title>
-</head>
-<body>
-    <h1>Welcome to DayCare Management System</h1>
-    <p>This system allows parents and educators to manage daycare details efficiently.</p>
-    <p>
-        <a href="/login">Login</a> | 
-        <a href="/register">Register</a>
-    </p>
-</body>
-</html>
+{% extends "master.html.twig" %}
+
+{% block title %}Welcome to Happy Trails Daycare
+{% endblock %}
+
+{% block content %}
+	<!-- Hero Section / Jumbotron with Background Image -->
+	<div
+		class="p-5 mb-4 rounded-3 position-relative" style="background: url('../public/images/kids-with-educator3.jpg') no-repeat center top; background-size: cover; height: 400px;">
+		<!-- Text container with a semi-transparent background -->
+		<div class="container-fluid py-5 text-center text-white" style="background-color: rgba(0, 0, 0, 0.1); padding: 20px; border-radius: 8px; display: inline-block;">
+			<h1 class="display-4 fw-bold">Happy Trails Daycare</h1>
+			<p class="fs-5">Where every step leads to bright futures.</p>
+			<p class="fs-5">Nurturing little hearts with care, joy, and adventure.</p>
+			<a href="/register" class="btn btn-primary btn-lg">Get Started</a>
+		</div>
+	</div>
+
+	<!-- Features Section with Images -->
+	<div class="row text-center">
+		<div class="col-md-4 mb-4">
+			<img src="../public/images/innovative-learning.jpg" alt="Innovative Learning" class="img-fluid mb-2 rounded-circle" style="width:200px;height:200px;">
+			<h3>Innovative Learning</h3>
+			<p>Engaging educational programs tailored for each child.</p>
+		</div>
+		<div class="col-md-4 mb-4">
+			<img src="../public/images/little-boy-holding-moms-hand.jpg" alt="Safe & Caring" class="img-fluid mb-2 rounded-circle" style="width:200px;height:200px;">
+			<h3>Safe & Caring</h3>
+			<p>A secure, loving environment where children thrive.</p>
+		</div>
+		<div class="col-md-4 mb-4">
+			<img src="../public/images/young-children-sharing.jpg" alt="Community Spirit" class="img-fluid mb-2 rounded-circle" style="width:200px;height:200px;">
+			<h3>Community Spirit</h3>
+			<p>Join a vibrant community that fosters growth and friendship.</p>
+		</div>
+	</div>
+
+	<!-- About Us / Mission Statement -->
+	<section id="about" class="container my-5">
+		<h2 class="text-center mb-4">About Us</h2>
+		<p class="lead text-center">At Happy Trails Daycare, we foster creativity and growth in a safe, nurturing environment. Our mission is to guide every child on a journey of learning and discovery.</p>
+	</section>
+
+	<!-- Testimonials -->
+	<section class="container my-5">
+		<h2 class="text-center mb-4">Testimonials</h2>
+		<div class="row">
+			<div class="col-md-6">
+				<blockquote class="blockquote">
+					<p class="mb-0">"Happy Trails Daycare has been a blessing for our family. Our child loves it there!"</p>
+					<footer class="blockquote-footer">
+						<cite title="Source Title">Jane Doe, Parent</cite>
+					</footer>
+				</blockquote>
+			</div>
+			<div class="col-md-6">
+				<blockquote class="blockquote">
+					<p class="mb-0">"The caring staff and innovative programs make this daycare exceptional."</p>
+					<footer class="blockquote-footer">
+						<cite title="Source Title">John Smith, Educator</cite>
+					</footer>
+				</blockquote>
+			</div>
+		</div>
+	</section>
+
+	<!-- Gallery / Virtual Tour -->
+	<section id="gallery" class="container my-5">
+		<h2 class="text-center mb-4">Gallery</h2>
+		<div class="row">
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery1.jpg" alt="Gallery Image 1" class="img-fluid rounded">
+			</div>
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery2.jpg" alt="Gallery Image 2" class="img-fluid rounded">
+			</div>
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery3.jpg" alt="Gallery Image 3" class="img-fluid rounded">
+			</div>
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery4.jpg" alt="Gallery Image 4" class="img-fluid rounded">
+			</div>
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery5.jpg" alt="Gallery Image 5" class="img-fluid rounded">
+			</div>
+			<div class="col-md-4 mb-3">
+				<img src="../public/images/gallery6.jpg" alt="Gallery Image 6" class="img-fluid rounded">
+			</div>
+		</div>
+	</section>
+
+	<!-- Upcoming Children's Events -->
+	<section id="events" class="container my-5">
+		<h2 class="mb-4 text-center">Upcoming Events for Children</h2>
+		<div class="row">
+			<div class="col-md-6 mb-3 d-flex">
+				<div class="card h-100">
+					<img src="../public/images/event3.jpg" class="card-img-top" alt="Children's Event 1">
+					<div class="card-body">
+						<h5 class="card-title">Spring Play Day</h5>
+						<p class="card-text">Join us for a fun-filled day of outdoor games and creative play designed just for children.</p>
+						<a href="#" class="btn btn-primary">Learn More</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-3 d-flex">
+				<div class="card h-100">
+					<img src="../public/images/event4.jpg" class="card-img-top" alt="Children's Event 2" style=" height:365px; object-fit: cover; object-position: top;">
+					<div class="card-body">
+						<h5 class="card-title">Kids Art Workshop</h5>
+						<p class="card-text">A creative workshop where children can explore art, crafts, and imaginative expression.</p>
+						<a href="#" class="btn btn-primary">Learn More</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contact Section -->
+	<section id="contact" class="container my-5">
+		<h2 class="text-center mb-4">Contact Us</h2>
+		<div class="row">
+			<div
+				class="col-md-6">
+				<!-- Contact Form -->
+				<form action="/contact" method="post" class="mb-4">
+					<div class="mb-3">
+						<label for="contactName" class="form-label">Name:</label>
+						<input type="text" name="name" id="contactName" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label for="contactEmail" class="form-label">Email:</label>
+						<input type="email" name="email" id="contactEmail" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label for="contactMessage" class="form-label">Message:</label>
+						<textarea name="message" id="contactMessage" rows="4" class="form-control" required></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary">Send Message</button>
+				</form>
+			</div>
+			<div class="col-md-6">
+				<!-- Map or Location Info -->
+				<div class="ratio ratio-16x9">
+					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d178788.19616459!2d-73.87668118113956!3d45.559064207477995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a541c64b70d%3A0x654e3138211fefef!2sMontreal%2C%20QC!5e0!3m2!1sen!2sca!4v1742682327781!5m2!1sen!2sca" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+				</div><div class="mb-4">
+					<p class="text-center">
+						<strong>Happy Trails Daycare</strong><br>
+						123 Happy Trails Road, City, State ZIP<br>
+						Phone: (555) 123-4567, Email: info@happytrailsdaycare.org
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+{% block addJS %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Select all nav links inside the collapsible navbar
+  var navLinks = document.querySelectorAll('.navbar-collapse .nav-link');
+  var collapseEl = document.querySelector('.navbar-collapse');
+
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function () {
+      // If the collapse element is shown, hide it.
+      var bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
+      if (bsCollapse && collapseEl.classList.contains('show')) {
+        bsCollapse.hide();
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

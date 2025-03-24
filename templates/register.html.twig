@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register - DayCare System</title>
+{% extends "master.html.twig" %}
+
+{% block title %}Register - DayCare System{% endblock %}
+
+{% block addHead %}
+    <!-- Additional head content (e.g., reCAPTCHA scripts) -->
     <script type="text/javascript">
-      // This function gets called once the reCAPTCHA API is loaded
       var onloadCallback = function() {
           grecaptcha.render('recaptcha-container', {
               'sitekey' : '6LdiBfwqAAAAANL4e-jNRI614xcYzHUbHl0X5hc8'
@@ -12,53 +12,76 @@
       };
     </script>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-</head>
-<body>
-    <h1>Register</h1>
-    <form id="register-form"  action="/register" method="post" enctype="multipart/form-data">
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" required><br>
+{% endblock %}
 
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required><br>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="text-center mb-4">Register</h1>
+        <form id="register-form" action="/register" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+                <div class="invalid-feedback">Please enter your name.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" name="email" id="email" class="form-control" required>
+                <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+                <div class="invalid-feedback">Please enter a password.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="role" class="form-label">Role:</label>
+                <select name="role" id="role" class="form-select" required>
+                    <option value="parent">Parent</option>
+                    <option value="educator">Educator</option>
+                </select>
+                <div class="invalid-feedback">Please select a role.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="profile_photo" class="form-label">Profile Photo (optional for parents):</label>
+                <input type="file" name="profile_photo" id="profile_photo" class="form-control" accept="image/*">
+            </div>
+            
+            <!-- Container for reCAPTCHA widget -->
+            <div id="recaptcha-container" class="mb-3"></div>
+            
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+    </div>
+</div>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br>
-
-        <label for="role">Role:</label>
-        <select name="role" id="role" required>
-            <option value="parent">Parent</option>
-            <option value="educator">Educator</option>
-        </select><br>
-
-        <label for="profile_photo">Profile Photo (optional for parents):</label>
-        <input type="file" name="profile_photo" id="profile_photo" accept="image/*"><br>
-
-        <!-- Container for reCAPTCHA widget -->
-        <div id="recaptcha-container"></div><br>
-
-        <button type="submit">Register</button>
-    </form>
-    <script type="text/javascript">
-      document.getElementById('register-form').addEventListener('submit', function(e) {
-          // Retrieve the reCAPTCHA response token.
-          var token = grecaptcha.getResponse();
-          console.log("Recaptcha token:", token);
-          if (!token) {
-              e.preventDefault();
-              alert("Please complete the reCAPTCHA challenge.");
-              return false;
-          }
-          // Check if hidden input already exists; if not, create it.
-          if (!document.querySelector("input[name='g-recaptcha-response']")) {
-              var hiddenInput = document.createElement("input");
-              hiddenInput.setAttribute("type", "hidden");
-              hiddenInput.setAttribute("name", "g-recaptcha-response");
-              hiddenInput.setAttribute("value", token);
-              this.appendChild(hiddenInput);
-          }
-          // Continue submitting the form.
-      });
-    </script>
-</body>
-</html>
+<script type="text/javascript">
+  // Bootstrap validation for form submission
+  (function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', function (event) {
+        // Retrieve reCAPTCHA token and check before validation
+        var token = grecaptcha.getResponse();
+        console.log("Recaptcha token:", token);
+        if (!token) {
+          event.preventDefault();
+          event.stopPropagation();
+          alert("Please complete the reCAPTCHA challenge.");
+          return false;
+        }
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false)
+    })
+  })();
+</script>
+{% endblock %}

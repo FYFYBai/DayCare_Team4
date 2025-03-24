@@ -1,0 +1,38 @@
+An activation token is a unique, randomly generated string that verifies a user's email address during the registration process. Here’s how it works step-by-step:
+
+Token Generation:
+When a user registers, your system generates a unique token—for example, using a function like bin2hex(random_bytes(32)). This token is random and hard to guess, ensuring security.
+
+Token Storage:
+The generated token is stored in your database alongside the user's record. It typically resides in a dedicated column (e.g., activation_token) so you can later verify its validity.
+
+Email with Activation Link:
+An email is sent to the user containing an activation link that includes the token as a query parameter. For instance, the link might look like:
+
+bash
+Copy
+https://team4.fsd13.ca/activate?token=UNIQUE_TOKEN_HERE
+This ensures that only someone with access to the user's email can activate the account.
+
+User Clicks the Link:
+When the user clicks the link, their browser makes a GET request to your activation route (e.g., /activate). The token is passed to your application via the URL query string.
+
+Token Verification:
+In the activation route, your application retrieves the token from the URL and looks it up in the database.
+
+If the token is found and valid, the system updates the user’s account (e.g., setting an activation_status field to 1) to indicate that the email is verified.
+Optionally, you may remove or invalidate the token after a successful activation to prevent reuse.
+Post-Activation:
+Once activated, the user is usually redirected to the login page or their dashboard, allowing them to access the application.
+
+================================================================
+Token generation is typically done using a cryptographically secure random number generator to ensure that each token is unique and hard to guess. In PHP, a common approach is:
+
+$activation_token = bin2hex(random_bytes(32));
+Here's what happens in that line:
+
+random_bytes(32):
+This function generates 32 random bytes. It uses a secure source of randomness provided by the operating system, making the output unpredictable.
+
+bin2hex(...):
+The raw bytes are then converted to a hexadecimal string. Since each byte becomes two hexadecimal characters, this results in a 64-character string.

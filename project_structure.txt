@@ -1,0 +1,27 @@
+project-root/
+ ├── index.php
+ ├── init.php
+ ├── helpers.php
+ ├── routes/
+ │    ├── auth.php
+ │    ├── registration.php
+ │    ├── password_reset.php
+ │    ├── dashboard.php
+ │    └── educator_dashboard.php
+ ├── templates/
+ │    ├── home.html.twig
+ │    ├── login.html.twig
+ │    ├── register.html.twig
+ │    ├── forgot-password.html.twig
+ │    ├── reset-password.html.twig
+ │    ├── dashboard.html.twig
+ │    └── educator-dashboard.html.twig
+ └── vendor/
+      └── (Composer packages)
+ ├── public/
+ │    ├── index.php         # Your front controller (entry point for the app)
+ │    ├── styles.css        # Static CSS file (or styles folder with multiple files)
+ │    ├── js/               # JavaScript files
+ │    ├── images/           # Image files
+ │    └── (other static assets)
+
