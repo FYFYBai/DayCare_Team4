@@ -253,37 +253,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal Backdrop -->
-<div class="modal-backdrop" id="modalBackdrop"></div>
-
-<!-- Error Modal -->
-<div class="modal" id="errorModal">
-    <div class="modal-header modal-header-error">
-        <h5>Error</h5>
-        <button type="button" class="modal-close-button" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-        {{ error ?? 'An error occurred during the payment process.' }}
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="modal-action-button" data-dismiss="modal">Close</button>
-    </div>
-</div>
-
-<!-- Payment Canceled Modal -->
-<div class="modal" id="canceledModal">
-    <div class="modal-header modal-header-warning">
-        <h5>Payment Canceled</h5>
-        <button type="button" class="modal-close-button" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-        <p>Your payment was canceled. You can try again when you're ready.</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="modal-action-button" data-dismiss="modal">Close</button>
-    </div>
-</div>
 {% endblock %}
 
 {% block addJS %}
