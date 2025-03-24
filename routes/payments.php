@@ -16,8 +16,7 @@ $app->get('/payment', function (Request $request, Response $response) {
     // Calculate the payment amount
     $paymentDetails = calculatePaymentAmount($userId);
     
-    $view = Twig::fromRequest($request);
-    return $view->render($response, 'payment.html.twig', [
+    return $this->get(Twig::class)->render($response, 'payment.html.twig', [
         'paymentDetails' => $paymentDetails
     ]);
 });
@@ -124,8 +123,7 @@ $app->get('/payment-success', function (Request $request, Response $response) us
         unset($_SESSION['pending_payment_id']);
     }
     
-    $view = Twig::fromRequest($request);
-    return $view->render($response, 'payment-success.html.twig');
+    return $this->get(Twig::class)->render($response, 'payment-success.html.twig');
 });
 
 // fucntion to calculate the payment amount
