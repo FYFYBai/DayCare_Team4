@@ -1,0 +1,22 @@
+DELIMITER $$
+
+CREATE PROCEDURE InsertAttendanceLastMonth()
+BEGIN
+    DECLARE currentDate DATE;
+    -- Start date: 30 days before today
+    SET currentDate = DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+    
+    WHILE currentDate <= CURDATE() DO
+        -- Insert one record for each child on the current date.
+        INSERT INTO registrations (child_id, registration_date, status)
+        SELECT id, currentDate, IF(RAND() < 0.9, 'present', 'absent') FROM children;
+        
+        -- Move to the next day.
+        SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+    END WHILE;
+END$$
+
+DELIMITER ;
+
+-- Call the procedure to insert attendance data for the past month.
+CALL InsertAttendanceLastMonth();

@@ -81,17 +81,18 @@ watch OneDrive videos
 ==========================================================
 2025/03/21 Shao Hang
 1. Done since last scrum
-
+Redo Frontend of Stripe since it was not correct.
 2. Plan until next Scrum
-
+Redo the frontend stripe + start the backend of Stripe
 3. Need assistance / figure things out
+Testing and it never works, watch more videos and how they do it.
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+Redo part of the management and child data management
 2. Plan until next Scrum
-   
+Finalize and test them before sunday night
 3. Need assistance / figure things out
 
  ---------------------------------------------------------
@@ -109,60 +110,67 @@ Profile
 ==========================================================
 2025/03/22 Shao Hang
 1. Done since last scrum
-
+N/A (sick went to the hospital)
 2. Plan until next Scrum
-
+N/A (sick), continue what I previously said for the Stripe payment
 3. Need assistance / figure things out
+N/A (sick)
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+Redo part of the management and child data management
 2. Plan until next Scrum
-   
+Finalize and test them before sunday night
 3. Need assistance / figure things out
 
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+Fixed Auth feature (Register, email activation, recaptcha, login, log out, reset password, rba for different users)
+Refactored project structure
 2. Plan until next Scrum
-
+Front-end of the application
+Improve structure of my templates
 
 3. Need assistance / figure things out
-
+Recaptcha feature - client-side key hard-coded, want to read it from .env file, not able to fix it
 ==========================================================
 2025/03/23 Shao Hang
 1. Done since last scrum
-
+Finished frontend of payment + testing
 2. Plan until next Scrum
-
+Need to create payment history for parents + child profile management
 3. Need assistance / figure things out
+List all the payment history and integrate it in the dashboard
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+Finalized design of the mentioned features
 2. Plan until next Scrum
-   
+   Fix bugs and testing on remote server, maybe front end design, make adjustment after talking to the team
 3. Need assistance / figure things out
-
+make adjustments to functionalities
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+Front-end of the application (Responsive UI) - Home page
+Improve structure of my templates
 2. Plan until next Scrum
-
+Educator dashboard and Manager dashboard.
 
 3. Need assistance / figure things out
 
 ==========================================================
 2025/03/24 Shao Hang
 1. Done since last scrum
-
+Stripe front-end and backend + fix path issues and site not working 
 2. Plan until next Scrum
-
+Still need to fix the stripe part with the interactive and add validations 
+maybe start parents/child profil
 3. Need assistance / figure things out
+debugging and add modal for all the validations if the payment didn't go through or is pending
 ------------------------------------------------------
 
  Qi He
@@ -175,12 +183,19 @@ Profile
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
+inserted some data in db for testing
+planning
 
 2. Plan until next Scrum
-
+fix email activation feature on remote host
+educatore-dashboard (implement attendance tracking feature)
+attendance
+watch a few remaining videos
+home page needs changes, if a user is logged in, it should show on home page
 
 3. Need assistance / figure things out
-
+fix email activation feature on remote host (might  be mailtrap is not suitable)
+cPanel SMTP set-up
 ==========================================================
 2025/03/25 Shao Hang
 1. Done since last scrum

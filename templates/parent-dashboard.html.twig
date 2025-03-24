@@ -1,0 +1,41 @@
+{% extends 'master.html.twig' %}
+
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Parent Dashboard</h1>
+    <p>Welcome, {{ user.name }}!</p>
+    
+    <h2>Your Children</h2>
+    <ul>
+        {% for child in children %}
+            <li>
+                {{ child.name }} - Date of Birth: {{ child.date_of_birth }}
+                {% if child.profile_photo_path %}
+                    <br>
+                    <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
+                {% endif %}
+            </li>
+        {% else %}
+            <li>No children registered yet. <a href="/child/list">Add children to your account</a>.</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Quick Actions</h2>
+    <ul>
+        <li><a href="/payment">Make Registration Payment</a></li>
+        <li><a href="/child/list">Manage Children</a></li>
+        <!-- Add more parent-specific actions here -->
+    </ul>
+    
+    <h2>Upcoming Events</h2>
+    <ul>
+        {% for event in events %}
+            <li>{{ event.name }} - {{ event.date }}</li>
+        {% else %}
+            <li>No upcoming events scheduled.</li>
+        {% endfor %}
+    </ul>
+    
+    <p><a href="/logout">Logout</a></p>
+{% endblock %}

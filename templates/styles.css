@@ -1,0 +1,113 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /*background-color: #f9f9f9;  Light, neutral background */
+    background: linear-gradient(to bottom, #F6F6F6, #ECECEC);
+    color: #333; /* Dark text for readability */
+}
+
+/* Centered Content Wrapper */
+#centeredContent {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff; /* White background for content */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Header styles for page titles */
+h1 {
+    color: #007ACC; /* A calm blue shade */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007ACC;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #005fa3;
+}
+
+/* Footer Styles */
+#footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Additional Styling for Master Template Blocks */
+header {
+    background: url('https://via.placeholder.com/1600x300?text=Daycare+Header') no-repeat center center;
+    background-size: cover;
+    height: 300px;
+}
+
+nav {
+    background-color: #f0f8ff; /* light blue background for navigation */
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+nav a {
+    color: #007ACC;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #centeredContent {
+        padding: 10px;
+    }
+    
+    nav a {
+        margin: 0 10px;
+    }
+}
+
+/* Example class for images within content */
+img.responsive {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}

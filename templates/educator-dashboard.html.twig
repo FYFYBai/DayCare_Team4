@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Educator Dashboard - DayCare System</title>
+</head>
+<body>
+    <h1>Educator Dashboard</h1>
+    <p>Welcome, {{ user.name }}!</p>
+    
+    <h2>Your Classes/Child Profiles</h2>
+    <ul>
+        {% for child in children %}
+            <li>{{ child.name }} - Age: {{ child.age }}</li>
+        {% else %}
+            <li>No child profiles assigned.</li>
+        {% endfor %}
+    </ul>
+    
+    <p><a href="/logout">Logout</a></p>
+</body>
+</html>

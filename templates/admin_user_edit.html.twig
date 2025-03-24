@@ -1,0 +1,85 @@
+{% extends "master.html.twig" %}
+
+{% block content %}
+<h2>Edit User (ID: {{ user.id }})</h2>
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Field</th>
+        <th>Current Value</th>
+        <th>Update</th>
+    </tr>
+
+    <!-- NAME row -->
+    <tr>
+        <td>Name</td>
+        <td>{{ user.name }}</td>
+        <td>
+            <form method="post" action="/admin/user/{{ user.id }}/edit">
+                <input type="hidden" name="column" value="name">
+                <input type="text" name="newValue" placeholder="New Name">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+
+    <!-- EMAIL row -->
+    <tr>
+        <td>Email</td>
+        <td>{{ user.email }}</td>
+        <td>
+            <form method="post" action="/admin/user/{{ user.id }}/edit">
+                <input type="hidden" name="column" value="email">
+                <input type="text" name="newValue" placeholder="New Email">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+
+    <!-- ROLE row -->
+    <tr>
+        <td>Role</td>
+        <td>{{ user.role }}</td>
+        <td>
+            <form method="post" action="/admin/user/{{ user.id }}/edit">
+                <input type="hidden" name="column" value="role">
+                <select name="newValue">
+                    <option value="parent"   {% if user.role == 'parent'   %}selected{% endif %}>Parent</option>
+                    <option value="educator" {% if user.role == 'educator' %}selected{% endif %}>Educator</option>
+                    <option value="manager"  {% if user.role == 'manager'  %}selected{% endif %}>Manager</option>
+                    <option value="admin"    {% if user.role == 'admin'    %}selected{% endif %}>Admin</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+
+    <!-- PASSWORD row -->
+    <tr>
+        <td>Password</td>
+        <!-- Show only asterisks, never the actual hashed password -->
+        <td>********</td>
+        <td>
+            <form method="post" action="/admin/user/{{ user.id }}/edit">
+                <input type="hidden" name="column" value="password">
+                <input type="password" name="newValue" placeholder="New Password">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+
+    <!-- isAdmin row (optional display) -->
+    <tr>
+        <td>isAdmin</td>
+        <td>{{ user.isAdmin }}</td>
+        <td><!-- This is updated automatically based on role='admin'. --></td>
+    </tr>
+</table>
+
+<br>
+
+<!-- Delete User Form -->
+<form method="post" action="/admin/user/{{ user.id }}/edit">
+    <input type="hidden" name="action" value="delete">
+    <button type="submit" style="background-color: red; color: white;">Delete User</button>
+</form>
+{% endblock %}
