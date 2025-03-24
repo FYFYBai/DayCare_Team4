@@ -105,8 +105,8 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     DB::update('users', ['activation_token' => $activation_token], "email=%s", $email);
 
     // Build activation link (adjust domain/port as needed)
-    $activation_link = "http://daycaresystem.org:8080/activate?token=$activation_token";
-    // $activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
+    //$activation_link = "http://daycaresystem.org:8080/activate?token=$activation_token";
+    $activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
 
     // Send activation email using helper function
     if (sendActivationEmail($email, $name, $activation_link)) {
