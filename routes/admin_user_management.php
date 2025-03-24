@@ -7,14 +7,14 @@ use Slim\Views\Twig;
 /**
  * USER MANAGEMENT ROUTES (ADMIN ONLY)
  *
- * As an administrator, I want to manage users (edit, delete)
- * so that I can ensure that all user data is accurate and up-to-date.
+ * 1) List all non-deleted users
+ * 2) Display the selected user in a table for edit (GET /admin/user/{userId}/edit)
+ * 3) POST route to update or delete user profile
  */
 
-// Group the routes under /admin, requiring 'admin' role
 $app->group('/admin', function () use ($app) {
 
-    // 1) List all non-deleted users
+    // (1) GET /admin/users -> List all non-deleted users
     $app->get('/users', function (Request $request, Response $response, $args) {
         $users = DB::query("SELECT * FROM users WHERE isDeleted=0");
         return $this->get(Twig::class)->render($response, 'admin_user_list.html.twig', [
@@ -22,25 +22,28 @@ $app->group('/admin', function () use ($app) {
         ]);
     });
 
-    // 2) GET route: Display a form for editing a user
+    // (2) GET /admin/user/{userId}/edit -> Show user info in a table
     $app->get('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
         $userId = (int)$args['userId'];
 
+        // Fetch the user from DB, ensuring they're not soft-deleted
         $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
         if (!$user) {
             $response->getBody()->write("User not found or already deleted.");
             return $response->withStatus(404);
         }
 
+        // Render a Twig template that displays the user's data in a table
         return $this->get(Twig::class)->render($response, 'admin_user_edit.html.twig', [
             'user' => $user
         ]);
     });
 
-    // 3) POST route: Update or Delete user
+    // (3) POST /admin/user/{userId}/edit -> Update or delete user profile
     $app->post('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
         $userId = (int)$args['userId'];
 
+        // Fetch the user again
         $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
         if (!$user) {
             $response->getBody()->write("User not found or already deleted.");
@@ -57,34 +60,76 @@ $app->group('/admin', function () use ($app) {
             return $response;
         }
 
-        // Otherwise, update user info
-        $name  = trim($data['name'] ?? '');
-        $email = trim($data['email'] ?? '');
-        $role  = trim($data['role'] ?? $user['role']); // optional role update
+        // Otherwise, we are updating a specific column
+        $column   = $data['column']   ?? '';
+        $newValue = trim($data['newValue'] ?? '');
 
-        if ($name === '' || $email === '') {
-            $response->getBody()->write("Name and Email are required.");
-            return $response->withStatus(400);
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $response->getBody()->write("Invalid email format.");
+        // Basic checks
+        if ($column === '') {
+            $response->getBody()->write("No column specified for update.");
             return $response->withStatus(400);
         }
 
-        // Possibly validate role if you're allowing the admin to change it    i.e. removing admin from the list will prevent the user to promote the profile to an admin role.
-        $allowedRoles = ['parent', 'educator', 'manager', 'admin'];
-        if (!in_array($role, $allowedRoles)) {
-            $response->getBody()->write("Invalid role.");
+        // Prepare a list of valid columns the admin can update
+        $allowedColumns = ['name', 'email', 'role', 'password'];
+        if (!in_array($column, $allowedColumns)) {
+            $response->getBody()->write("Invalid or uneditable column.");
             return $response->withStatus(400);
         }
 
-        DB::update('users', [
-            'name' => $name,
-            'email' => $email,
-            'role' => $role
-        ], "id=%i", $userId);
+        // We'll build the $updateData array to pass to DB::update
+        $updateData = [];
 
-        $response->getBody()->write("User updated successfully.");
-        return $response;
+        switch ($column) {
+            case 'name':
+                if ($newValue === '') {
+                    $response->getBody()->write("Name cannot be empty.");
+                    return $response->withStatus(400);
+                }
+                $updateData['name'] = $newValue;
+                break;
+
+            case 'email':
+                if (!filter_var($newValue, FILTER_VALIDATE_EMAIL)) {
+                    $response->getBody()->write("Invalid email format.");
+                    return $response->withStatus(400);
+                }
+                $updateData['email'] = $newValue;
+                break;
+
+            case 'role':
+                $allowedRoles = ['parent', 'educator', 'manager', 'admin'];
+                if (!in_array($newValue, $allowedRoles)) {
+                    $response->getBody()->write("Invalid role.");
+                    return $response->withStatus(400);
+                }
+                $updateData['role']    = $newValue;
+                $updateData['isAdmin'] = ($newValue === 'admin') ? 1 : 0;
+                break;
+
+            case 'password':
+                // If blank, do nothing or handle as error
+                if ($newValue === '') {
+                    $response->getBody()->write("Password cannot be empty.");
+                    return $response->withStatus(400);
+                }
+                // Optionally validate password strength
+                if (strlen($newValue) < 8) {
+                    $response->getBody()->write("Password must be at least 8 characters long.");
+                    return $response->withStatus(400);
+                }
+                // Hash the new password
+                $hashedPassword = password_hash($newValue, PASSWORD_DEFAULT);
+                $updateData['password'] = $hashedPassword;
+                break;
+        }
+
+        // Perform the update
+        DB::update('users', $updateData, "id=%i", $userId);
+
+        // Redirect back so the admin can see the updated info
+        return $response
+            ->withHeader('Location', '/admin/user/' . $userId . '/edit')
+            ->withStatus(302);
     });
-})->add($checkRoleMiddleware('admin')); // Only admins can access these
+})->add($checkRoleMiddleware('admin')); // Only admins can access

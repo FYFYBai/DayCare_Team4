@@ -147,11 +147,11 @@ List all the payment history and integrate it in the dashboard
 
  Qi He
 1. Done since last scrum
-
+Finalized design of the mentioned features
 2. Plan until next Scrum
-   
+   Fix bugs and testing on remote server, maybe front end design, make adjustment after talking to the team
 3. Need assistance / figure things out
-
+make adjustments to functionalities
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
