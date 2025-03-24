@@ -189,6 +189,7 @@ fix email activation feature on remote host
 educatore-dashboard (implement attendance tracking feature)
 attendance
 watch a few remaining videos
+home page needs changes, if a user is logged in, it should show on home page
 
 3. Need assistance / figure things out
 fix email activation feature on remote host (might  be mailtrap is not suitable)
