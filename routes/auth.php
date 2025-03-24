@@ -81,7 +81,6 @@ $app->post('/login', function (Request $request, Response $response, $args) {
         return $response->withStatus(401);
 
     }
-
     
 
     // Ensure the account is activated
@@ -122,9 +121,11 @@ $app->post('/login', function (Request $request, Response $response, $args) {
             break;
 
         case 'parent':
+            $redirectUrl = '/parent-dashboard';
+            break;
         default:
 
-            $redirectUrl = '/parent-dashboard';
+            $redirectUrl = '/dashboard';
 
             break;
     }
