@@ -54,18 +54,21 @@ $app->post('/login', function (Request $request, Response $response, $args) {
     
     // Redirect user based on role
     // You can adjust these routes as needed. For example, you might have different dashboards.
+    // Redirect user based on role
     switch ($user['role']) {
         case 'manager':
-            $redirectUrl = '/dashboard'; // or a dedicated manager dashboard
+            $redirectUrl = '/dashboard';
             break;
         case 'educator':
             $redirectUrl = '/educator-dashboard';
             break;
         case 'parent':
-        default:
-            $redirectUrl = '/dashboard'; // generic dashboard for parents
+            $redirectUrl = '/parent-dashboard';
             break;
-    }
+        default:
+            $redirectUrl = '/dashboard';
+            break;
+    } 
     
     return $response->withHeader('Location', $redirectUrl)->withStatus(302);
 });
