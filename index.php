@@ -22,3 +22,4 @@ require_once __DIR__ . '/routes/admin_user_management.php';
 
 // Run the Slim application to process HTTP requests
 $app->run();
+
