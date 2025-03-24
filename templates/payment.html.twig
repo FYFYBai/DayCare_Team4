@@ -284,8 +284,9 @@
         <button type="button" class="modal-action-button" data-dismiss="modal">Close</button>
     </div>
 </div>
+{% endblock %}
 
-{% block scripts %}
+{% block addJS %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Simplified variable declarations
@@ -333,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showModal('errorModal');
         {% endif %}
         
-        {% if app.request.query.get('canceled') %}
+        {% if canceled is defined and canceled %}
             showModal('canceledModal');
         {% endif %}
     };
@@ -383,5 +384,4 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePricing();
 });
 </script>
-{% endblock %}
 {% endblock %} 
