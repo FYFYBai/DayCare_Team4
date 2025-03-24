@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Parent Dashboard - DayCare System</title>
-</head>
-<body>
+{% extends 'master.html.twig' %}
+
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block content %}
     <h1>Parent Dashboard</h1>
     <p>Welcome, {{ user.name }}!</p>
     
@@ -40,5 +38,4 @@
     </ul>
     
     <p><a href="/logout">Logout</a></p>
-</body>
-</html> 
+{% endblock %}
