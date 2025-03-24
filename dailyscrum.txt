@@ -165,10 +165,12 @@ Educator dashboard and Manager dashboard.
 ==========================================================
 2025/03/24 Shao Hang
 1. Done since last scrum
-
+Stripe front-end and backend + fix path issues and site not working 
 2. Plan until next Scrum
-
+Still need to fix the stripe part with the interactive and add validations 
+maybe start parents/child profil
 3. Need assistance / figure things out
+debugging and add modal for all the validations if the payment didn't go through or is pending
 ------------------------------------------------------
 
  Qi He
