@@ -14,7 +14,7 @@ use Ramsey\Uuid\Uuid; // For unique filenames if you handle file uploads
 
 // Group the routes under /child, requiring parent role
 $app->group('/child', function () use ($app) {
-
+    
     // 1) List all children for the logged-in parent
     $app->get('/list', function (Request $request, Response $response, $args) {
         // Retrieve children where parent_id = current user, and isDeleted=0
