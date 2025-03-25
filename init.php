@@ -74,3 +74,12 @@ $app->addErrorMiddleware(true, true, true);
 $container->set(Logger::class, function() use ($log) {
     return $log;
 });
+
+$container->set(\Slim\Flash\Messages::class, function () {
+    return new \Slim\Flash\Messages();
+});
+
+// This makes user and role available in all Twig templates.
+$twig = $container->get(Twig::class)->getEnvironment();
+$twig->addGlobal('user', $_SESSION['user_id'] ?? null);
+$twig->addGlobal('role', $_SESSION['role'] ?? null);

@@ -41,13 +41,21 @@
 							<li class="nav-item">
 								<a class="nav-link" href="#contact">Contact</a>
 							</li>
-							<!-- Optionally, if the user is not logged in -->
-							<li class="nav-item">
-								<a class="nav-link" href="/login">Login</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="/register">Register</a>
-							</li>
+							{% if user %}
+								<li class="nav-item">
+									<a class="nav-link" href="/{{ role }}-dashboard">Dashboard</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/logout">Logout</a>
+								</li>
+							{% else %}
+								<li class="nav-item">
+									<a class="nav-link" href="/login">Login</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/register">Register</a>
+								</li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>
