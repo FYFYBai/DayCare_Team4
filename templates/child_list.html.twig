@@ -1,0 +1,25 @@
+{% extends "master.html.twig" %}
+
+{% block content %}
+<h2>Your Children</h2>
+
+<a href="/child/new" style="display:inline-block; margin-bottom:10px;">Add Child</a>
+
+{% if children is not empty %}
+    <ul>
+    {% for child in children %}
+        <li>
+            <strong>{{ child.name }}</strong> (DOB: {{ child.date_of_birth }})
+            <br>
+            {% if child.profile_photo_path %}
+                <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
+            {% endif %}
+            <br>
+            <a href="/child/{{ child.id }}/edit">Edit</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not added any children yet.</p>
+{% endif %}
+{% endblock %}

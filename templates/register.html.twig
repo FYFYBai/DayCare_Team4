@@ -3,11 +3,10 @@
 {% block title %}Register - DayCare System{% endblock %}
 
 {% block addHead %}
-    <!-- Additional head content (e.g., reCAPTCHA scripts) -->
     <script type="text/javascript">
       var onloadCallback = function() {
           grecaptcha.render('recaptcha-container', {
-              'sitekey' : '6LdiBfwqAAAAANL4e-jNRI614xcYzHUbHl0X5hc8'
+              'sitekey': '{{ recaptcha_site_key }}'
           });
       };
     </script>
@@ -18,16 +17,27 @@
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <h1 class="text-center mb-4">Register</h1>
+
+        {# ✅ Flash messages #}
+        {% if messages.success %}
+          <div class="alert alert-success">{{ messages.success[0]|raw }}</div> {# remove raw in prod #}
+        {% endif %}
+        {% if messages.error %}
+          <div class="alert alert-danger">{{ messages.error[0] }}</div>
+        {% endif %}
+
         <form id="register-form" action="/register" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
-                <input type="text" name="name" id="name" class="form-control" required>
+                <input type="text" name="name" id="name" class="form-control" required
+                       value="{{ formData.name|default('') }}">
                 <div class="invalid-feedback">Please enter your name.</div>
             </div>
             
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input type="email" name="email" id="email" class="form-control" required>
+                <input type="email" name="email" id="email" class="form-control" required
+                       value="{{ formData.email|default('') }}">
                 <div class="invalid-feedback">Please enter a valid email.</div>
             </div>
             
@@ -40,8 +50,8 @@
             <div class="mb-3">
                 <label for="role" class="form-label">Role:</label>
                 <select name="role" id="role" class="form-select" required>
-                    <option value="parent">Parent</option>
-                    <option value="educator">Educator</option>
+                    <option value="parent" {{ formData.role == 'parent' ? 'selected' : '' }}>Parent</option>
+                    <option value="educator" {{ formData.role == 'educator' ? 'selected' : '' }}>Educator</option>
                 </select>
                 <div class="invalid-feedback">Please select a role.</div>
             </div>
@@ -51,7 +61,6 @@
                 <input type="file" name="profile_photo" id="profile_photo" class="form-control" accept="image/*">
             </div>
             
-            <!-- Container for reCAPTCHA widget -->
             <div id="recaptcha-container" class="mb-3"></div>
             
             <button type="submit" class="btn btn-primary w-100">Register</button>
@@ -60,28 +69,19 @@
 </div>
 
 <script type="text/javascript">
-  // Bootstrap validation for form submission
   (function () {
-    'use strict'
-    const forms = document.querySelectorAll('.needs-validation')
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
     Array.from(forms).forEach(form => {
       form.addEventListener('submit', function (event) {
-        // Retrieve reCAPTCHA token and check before validation
         var token = grecaptcha.getResponse();
-        console.log("Recaptcha token:", token);
-        if (!token) {
-          event.preventDefault();
-          event.stopPropagation();
-          alert("Please complete the reCAPTCHA challenge.");
-          return false;
-        }
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
         }
         form.classList.add('was-validated');
-      }, false)
-    })
+      }, false);
+    });
   })();
 </script>
 {% endblock %}

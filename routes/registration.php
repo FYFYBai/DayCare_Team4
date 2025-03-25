@@ -3,21 +3,37 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Ramsey\Uuid\Uuid;
+use Slim\Routing\RouteContext;
 
 // Registration form (GET)
 $app->get('/register', function (Request $request, Response $response, $args) {
-    return $this->get(Twig::class)->render($response, 'register.html.twig');
-});
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    $messages = $flash->getMessages();
+
+    $formData = $_SESSION['formData'] ?? [];
+    unset($_SESSION['formData']); // Clear after use
+
+    return $this->get(Twig::class)->render($response, 'register.html.twig', [
+        'recaptcha_site_key' => $_ENV['RECAPTCHA_SITE_KEY'],
+        'messages' => $messages,
+        'formData' => $formData
+    ]);
+})->setName('register');
 
 // Registration submission (POST)
 $app->post('/register', function (Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
+    $_SESSION['formData'] = $data; // Save user input for repopulating form
 
-    // Validate required fields
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    $router = RouteContext::fromRequest($request)->getRouteParser();
+
+    // Validate required fields first
     if (empty($data['name']) || empty($data['email']) || empty($data['password']) || empty($data['role'])) {
-        $response->getBody()->write("All fields (name, email, password, role) are required.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "All fields (name, email, password, role) are required.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
+
     $name = trim($data['name']);
     $email = trim($data['email']);
     $password = $data['password'];
@@ -25,47 +41,49 @@ $app->post('/register', function (Request $request, Response $response, $args) {
 
     // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $response->getBody()->write("Invalid email format.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Invalid email format.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
+    
     // Validate password strength
-    if (strlen($password) < 8 ||
+    if (
+        strlen($password) < 8 ||
         !preg_match('/[A-Z]/', $password) ||
         !preg_match('/[a-z]/', $password) ||
         !preg_match('/[0-9]/', $password) ||
         !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)
     ) {
-        $response->getBody()->write("Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one number, and one special character.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one number, and one special character.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Validate role and block manager self-registration
     $allowedRoles = ['parent', 'educator', 'manager'];
     if (!in_array($role, $allowedRoles)) {
-        $response->getBody()->write("Invalid role selected.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Invalid role selected.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
     if ($role === 'manager') {
-        $response->getBody()->write("Manager accounts must be added manually by an admin.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Manager accounts must be added manually by an admin.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
 
-    // Validate reCAPTCHA (if using it in registration)
+    // Now validate reCAPTCHA after the basic validations
     $recaptchaResponse = $data['g-recaptcha-response'] ?? '';
     if (!verifyReCaptcha($recaptchaResponse)) {
-        $response->getBody()->write("ReCaptcha verification failed.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "ReCaptcha verification failed. Please complete the reCAPTCHA challenge.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
 
     // Check if email already exists
     $exists = DB::queryFirstField("SELECT id FROM users WHERE email = %s AND isDeleted = 0", $email);
     if ($exists) {
-        $response->getBody()->write("Email already registered.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Email already registered.");
+        return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
 
-    // Handle profile photo upload for educators (or managers) only
+    // Handle profile photo upload for educators only (parents use default)
     $filename = 'default.png';
     if ($role !== 'parent') {
         $uploadedFiles = $request->getUploadedFiles();
@@ -73,12 +91,12 @@ $app->post('/register', function (Request $request, Response $response, $args) {
         if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
             $allowedTypes = ['image/jpeg', 'image/png'];
             if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
-                $response->getBody()->write("Invalid file type. Only JPEG and PNG allowed.");
-                return $response->withStatus(400);
+                $flash->addMessage('error', "Invalid file type. Only JPEG and PNG allowed.");
+                return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
             }
             if ($profilePhoto->getSize() > (2 * 1024 * 1024)) {
-                $response->getBody()->write("File size exceeds 2MB limit.");
-                return $response->withStatus(400);
+                $flash->addMessage('error', "File size exceeds 2MB limit.");
+                return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
             }
             $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
             $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
@@ -105,17 +123,19 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     DB::update('users', ['activation_token' => $activation_token], "email=%s", $email);
 
     // Build activation link (adjust domain/port as needed)
-    $activation_link = "http://daycaresystem.org:8080/activate?token=$activation_token";
-    // $activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
+    $activation_link = "https://team4.fsd13.ca/activate?token=$activation_token";
 
-    // Send activation email using helper function
+    // Clear form data on successful registration
+    unset($_SESSION['formData']);
+
     if (sendActivationEmail($email, $name, $activation_link)) {
-        $message = "Registration successful. Please check your email to activate your account.";
+        $devLink = "<br><strong>Dev/Test:</strong> <a href='{$activation_link}' target='_blank'>Click here to activate</a>"; // remove for production
+        $flash->addMessage('success', "Registration successful. Please check your email to activate your account. $devLink");
     } else {
-        $message = "Registration successful, but activation email failed to send.";
+        $flash->addMessage('error', "Registered, but activation email failed to send.");
     }
-    $response->getBody()->write($message);
-    return $response;
+
+    return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
 });
 
 // Activation route (GET)
