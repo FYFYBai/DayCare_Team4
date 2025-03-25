@@ -6,6 +6,32 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response as SlimResponse;
 
+// Retrieve Mailtrap or CPanel SMTP server details based on environment
+/* function getMailConfig() {
+    return [
+        'env' => 'dev', // change to 'prod' for production
+
+        'mailtrap' => [
+            'host' => 'sandbox.smtp.mailtrap.io',
+            'username' => '5e6d6d4e086657',
+            'password' => 'b855d8085d5af3',
+            'port' => 2525,
+            'from_email' => 'no-reply@yourdomain.com',
+            'from_name' => 'DayCare System'
+        ],
+
+        'cpanel' => [
+            'host' => 'mail.team4.fsd13.ca', // CHECK YOUR CPanel HOST
+            'username' => 'team4@team4.fsd13.ca',
+            'password' => 'your_cpanel_email_password',
+            'port' => 465,
+            'encryption' => 'ssl', // or 'tls'
+            'from_email' => 'team4@team4.fsd13.ca',
+            'from_name' => 'DayCare System'
+        ]
+    ];
+} */
+
 /**
  * Send an activation email using PHPMailer and Mailtrap.
  *
@@ -14,7 +40,8 @@ use Slim\Psr7\Response as SlimResponse;
  * @param string $activationLink Activation URL.
  * @return bool True on success, false otherwise.
  */
-function sendActivationEmail($toEmail, $toName, $activationLink) {
+
+/* function sendActivationEmail($toEmail, $toName, $activationLink) {
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -39,6 +66,62 @@ function sendActivationEmail($toEmail, $toName, $activationLink) {
         error_log("Activation email could not be sent. Mailer Error: {$mail->ErrorInfo}");
         return false;
     }
+} */
+
+function sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody) {
+    require_once __DIR__ . '/vendor/autoload.php';
+
+    $env = $_ENV['APP_ENV'] ?? 'dev';
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        
+        if ($env === 'prod') {
+            $mail->Host       = $_ENV['MAIL_HOST_PROD'];
+            $mail->Username   = $_ENV['MAIL_USERNAME_PROD'];
+            $mail->Password   = $_ENV['MAIL_PASSWORD_PROD'];
+            $mail->Port       = $_ENV['MAIL_PORT_PROD'];
+            $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION_PROD'];
+            $mail->setFrom($_ENV['MAIL_FROM_EMAIL_PROD'], $_ENV['MAIL_FROM_NAME_PROD']);
+        } else {
+            $mail->Host       = $_ENV['MAIL_HOST'];
+            $mail->Username   = $_ENV['MAIL_USERNAME'];
+            $mail->Password   = $_ENV['MAIL_PASSWORD'];
+            $mail->Port       = $_ENV['MAIL_PORT'];
+            $mail->SMTPSecure = 'tls';
+            $mail->setFrom($_ENV['MAIL_FROM_EMAIL'], $_ENV['MAIL_FROM_NAME']);
+        }
+
+        $mail->SMTPAuth = true;
+        $mail->addAddress($toEmail, $toName);
+        $mail->isHTML(true);
+        $mail->Subject  = $subject;
+        $mail->Body     = $htmlBody;
+        $mail->AltBody  = $altBody;
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
+    }
+}
+
+function sendActivationEmail($toEmail, $toName, $activationLink) {
+    $subject  = 'Activate Your Account';
+    $htmlBody = "Click the following link to activate your account: <a href='{$activationLink}'>Activate Account</a>";
+    $altBody  = "Copy and paste this link in your browser to activate your account: {$activationLink}";
+    
+    return sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody);
+}
+
+function sendPasswordResetEmail($toEmail, $toName, $resetLink) {
+    $subject  = 'Reset Your Password';
+    $htmlBody = "Click the following link to reset your password: <a href='{$resetLink}'>Reset Password</a>";
+    $altBody  = "Copy and paste this link in your browser to reset your password: {$resetLink}";
+    
+    return sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody);
 }
 
 /**
@@ -48,26 +131,25 @@ function sendActivationEmail($toEmail, $toName, $activationLink) {
  * @return bool True if verification is successful.
  */
 function verifyReCaptcha($recaptchaResponse) {
-    $secret = getenv('RECAPTCHA_SECRET') ?: '6LdiBfwqAAAAAKVUa71C5VQ3-uBA4YtEkF-Gfmdp';
+    $secret = $_ENV['RECAPTCHA_SECRET'] ?? 'your-default-key-here';
+
     if (empty($recaptchaResponse)) {
         return false;
     }
-    $data = http_build_query([
-        'secret' => $secret,
-        'response' => $recaptchaResponse,
-    ]);
-    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        curl_close($ch);
-        return false;
-    }
-    curl_close($ch);
-    $responseData = json_decode($response);
-    return isset($responseData->success) && $responseData->success;
+
+    $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
+        'http' => [
+            'method'  => 'POST',
+            'header'  => 'Content-type: application/x-www-form-urlencoded',
+            'content' => http_build_query([
+                'secret' => $secret,
+                'response' => $recaptchaResponse
+            ])
+        ]
+    ]));
+
+    $result = json_decode($response);
+    return $result && $result->success;
 }
 
 /**
@@ -80,7 +162,7 @@ $checkRoleMiddleware = function ($requiredRole) {
     return function (Request $request, RequestHandler $handler) use ($requiredRole): Response {
         // Check if the session role is set and matches the required role.
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== $requiredRole) {
-            $response = new Response();
+            $response = new SlimResponse();
             $response->getBody()->write("Access Denied.");
             return $response->withStatus(403);
         }

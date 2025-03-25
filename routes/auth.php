@@ -1,81 +1,86 @@
 <?php
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
+use Slim\Routing\RouteContext;
 
-// Display the login form
+// Display login form
 $app->get('/login', function (Request $request, Response $response, $args) {
-    return $this->get(Twig::class)->render($response, 'login.html.twig');
-});
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    $messages = $flash->getMessages();
+
+    $formData = $_SESSION['loginForm'] ?? [];
+    unset($_SESSION['loginForm']); // clear it once used
+
+    return $this->get(Twig::class)->render($response, 'login.html.twig', [
+        'messages' => $messages,
+        'formData' => $formData
+    ]);
+})->setName('login');  // <-- Set the route name here
 
 // Process login form submission
 $app->post('/login', function (Request $request, Response $response, $args) {
     $data = $request->getParsedBody();
-    
-    // Validate required fields
+    $_SESSION['loginForm'] = $data;
+
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    $router = RouteContext::fromRequest($request)->getRouteParser();
+
     if (empty($data['email']) || empty($data['password'])) {
-        $response->getBody()->write("Email and password are required.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', 'Email and password are required.');
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
-    
+
     $email = trim($data['email']);
     $password = $data['password'];
-    
-    // Validate email format
+
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $response->getBody()->write("Invalid email format.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', 'Invalid email format.');
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
-    
-    // (Optional: Validate reCAPTCHA if needed)
-    // $recaptchaResponse = $data['g-recaptcha-response'] ?? '';
-    // if (!verifyReCaptcha($recaptchaResponse)) {
-    //     $response->getBody()->write("ReCaptcha verification failed.");
-    //     return $response->withStatus(400);
-    // }
-    
-    // Fetch user details from database
+
     $user = DB::queryFirstRow("SELECT * FROM users WHERE email = %s AND isDeleted = 0", $email);
+
     if (!$user || !password_verify($password, $user['password'])) {
-        $response->getBody()->write("Invalid credentials.");
-        return $response->withStatus(401);
+        $flash->addMessage('error', 'Invalid credentials.');
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
-    
-    // Ensure the account is activated
+
     if ($user['activation_status'] == 0) {
-        $response->getBody()->write("Please activate your account via the email link.");
-        return $response->withStatus(401);
+        $flash->addMessage('error', 'Please activate your account via the email link.');
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
-    
-    // Set session variables for logged-in user
-    $_SESSION['user_id']  = $user['id'];
-    $_SESSION['role']     = $user['role'];
+
+    // Auth success: set session
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['role'] = $user['role'];
     $_SESSION['is_admin'] = $user['isAdmin'];
-    
-    // Redirect user based on role
-    // You can adjust these routes as needed. For example, you might have different dashboards.
+
+    // Clear login form data on success
+    unset($_SESSION['loginForm']);
+
+    // Role-based redirect
     switch ($user['role']) {
         case 'manager':
-            $redirectUrl = '/dashboard'; // or a dedicated manager dashboard
+            $redirectUrl = '/dashboard';
             break;
         case 'educator':
             $redirectUrl = '/educator-dashboard';
             break;
         case 'parent':
-        default:
-            $redirectUrl = '/dashboard'; // generic dashboard for parents
+            $redirectUrl = '/parent-dashboard';
             break;
+        default:
+            $redirectUrl = '/dashboard';
     }
-    
+
     return $response->withHeader('Location', $redirectUrl)->withStatus(302);
 });
 
 // Logout route
 $app->get('/logout', function (Request $request, Response $response, $args) {
-    // Clear session variables and destroy the session
     session_unset();
     session_destroy();
-    
-    // Redirect to the login page
     return $response->withHeader('Location', '/login')->withStatus(302);
 });
