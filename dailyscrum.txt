@@ -214,13 +214,13 @@ cPanel SMTP set-up
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-RBA and authentication: fixed redirection, error handling, validation, smpt issues on remote host
+RBA and authentication: fixed redirection, error handling using Flash messages, validation, smpt issues on remote host
 fixed home page
 2. Plan until next Scrum
 educatore-dashboard (implement attendance tracking feature)
 attendance
 watch a few remaining videos
-
+fix image upload from remote host instead of static file upload (if not done tonight)
 3. Need assistance / figure things out
 
 ==========================================================
