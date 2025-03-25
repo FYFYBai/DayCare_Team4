@@ -25,10 +25,10 @@ $log->pushProcessor(function ($record) {
     return $record;
 });
 
-/* // Register Logger (might remove, TODO:testing)
+// Register Logger (might remove, TODO:testing)
 $container->set(Logger::class, function() use ($log) {
     return $log;
-}); */
+});
 
 
 // Setup database using MeekroDB (adjust as needed)
@@ -59,7 +59,8 @@ $container->set(Twig::class, function() {
 $app = AppFactory::createFromContainer($container);
 
 // Set base path if the app is in a subdirectory (uncomment and adjust if needed)
-// $app->setBasePath('/teamsproject');
+//$app->setBasePath('/teamsproject');
+//$app->setBasePath('/daycaresystem/DayCare_Team4');
 
 // Add Twig middleware for rendering templates
 $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
@@ -67,3 +68,17 @@ $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
 // Add routing and error middleware
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
+
+// Register Logger (might remove, TODO:testing)
+$container->set(Logger::class, function() use ($log) {
+    return $log;
+});
+
+$container->set(\Slim\Flash\Messages::class, function () {
+    return new \Slim\Flash\Messages();
+});
+
+// This makes user and role available in all Twig templates.
+$twig = $container->get(Twig::class)->getEnvironment();
+$twig->addGlobal('user', $_SESSION['user_id'] ?? null);
+$twig->addGlobal('role', $_SESSION['role'] ?? null);

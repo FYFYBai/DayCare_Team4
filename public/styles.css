@@ -9,14 +9,13 @@ body {
     color: #333;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 100px 0 0 0; /* 80px top padding to offset fixed navbar */
 }
 
 /* Container for content with some padding */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
 /* Header Styling */
@@ -38,6 +37,11 @@ nav a {
     margin: 0 15px;
     text-decoration: none;
     font-weight: bold;
+}
+
+nav.fixed-top {
+    height: 100px;
+    line-height: 100px; /* Optional: vertically centers the text */
 }
 
 /* Footer Styling */

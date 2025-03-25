@@ -57,7 +57,7 @@ Thumbs.db
 .vscode/
 
 # Environment variables
-.env
+# .env
 
 # Ignore video files
 *.mp4

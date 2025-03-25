@@ -1,25 +1,37 @@
 {% extends "master.html.twig" %}
 
+{% block addHead %}
+<link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
 {% block content %}
-<h2>Edit Child Data</h2>
-<form method="post" action="/child/{{ child.id }}/edit" enctype="multipart/form-data">
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" value="{{ child.name }}" required>
+<div class="content-box custom-form">
+    <h2>Edit Child Data</h2>
+    <form method="post" action="/child/{{ child.id }}/edit" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="{{ child.name }}" required>
 
-    <label for="date_of_birth">Date of Birth:</label>
-    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ child.date_of_birth|date('Y-m-d') }}" required>
+        <label for="date_of_birth">Date of Birth:</label>
+        <input type="date" name="date_of_birth" id="date_of_birth" value="{{ child.date_of_birth|date('Y-m-d') }}" required>
 
-    <p>Current Photo:</p>
-    {% if child.profile_photo_path %}
-        <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
-    {% else %}
-        <p>No photo yet.</p>
-    {% endif %}
-    <br>
-    <label for="profile_photo">New Photo (optional):</label>
-    <input type="file" name="profile_photo" id="profile_photo" accept="image/*">
+        <p>Current Photo:</p>
+        {% if child.profile_photo_path %}
+            <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
+        {% else %}
+            <p>No photo yet.</p>
+        {% endif %}
 
-    <br><br>
-    <button type="submit">Save Changes</button>
-</form>
+        <label for="profile_photo">New Photo (optional):</label>
+        <input type="file" name="profile_photo" id="profile_photo" accept="image/*">
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <hr>
+
+    <!-- Delete Child Form -->
+    <form method="post" action="/child/{{ child.id }}/delete" onsubmit="return confirm('Are you sure you want to delete this child profile?');">
+        <button type="submit" style="background-color: red; color: white;">Delete Child</button>
+    </form>
+</div>
 {% endblock %}

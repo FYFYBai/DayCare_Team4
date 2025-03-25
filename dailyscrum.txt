@@ -138,19 +138,20 @@ Recaptcha feature - client-side key hard-coded, want to read it from .env file, 
 ==========================================================
 2025/03/23 Shao Hang
 1. Done since last scrum
-
+Finished frontend of payment + testing
 2. Plan until next Scrum
-
+Need to create payment history for parents + child profile management
 3. Need assistance / figure things out
+List all the payment history and integrate it in the dashboard
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+Finalized design of the mentioned features
 2. Plan until next Scrum
-   
+   Fix bugs and testing on remote server, maybe front end design, make adjustment after talking to the team
 3. Need assistance / figure things out
-
+make adjustments to functionalities
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
@@ -164,28 +165,36 @@ Educator dashboard and Manager dashboard.
 ==========================================================
 2025/03/24 Shao Hang
 1. Done since last scrum
-
+Stripe front-end and backend + fix path issues and site not working 
 2. Plan until next Scrum
-
+Still need to fix the stripe part with the interactive and add validations 
+maybe start parents/child profil
 3. Need assistance / figure things out
+debugging and add modal for all the validations if the payment didn't go through or is pending
 ------------------------------------------------------
 
  Qi He
 1. Done since last scrum
-
+still troubleshooting, admin design
 2. Plan until next Scrum
-   
+finish troubleshooting and add admin dashboard and routes
 3. Need assistance / figure things out
-
+debugging 404 error
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+inserted some data in db for testing
+planning
 2. Plan until next Scrum
-
-
+fix email activation feature on remote host
+educatore-dashboard (implement attendance tracking feature)
+attendance
+watch a few remaining videos
+home page needs changes, if a user is logged in, it should show on home page
+fix image upload from remote host instead of static file upload
 3. Need assistance / figure things out
-
+fix email activation feature on remote host (might  be mailtrap is not suitable)
+cPanel SMTP set-up
 ==========================================================
 2025/03/25 Shao Hang
 1. Done since last scrum
@@ -205,10 +214,13 @@ Educator dashboard and Manager dashboard.
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+RBA and authentication: fixed redirection, error handling using Flash messages, validation, smpt issues on remote host
+fixed home page
 2. Plan until next Scrum
-
-
+educatore-dashboard (implement attendance tracking feature)
+attendance
+watch a few remaining videos
+fix image upload from remote host instead of static file upload (if not done tonight)
 3. Need assistance / figure things out
 
 ==========================================================
@@ -230,7 +242,8 @@ Educator dashboard and Manager dashboard.
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+Perfected the auth feature, improved redirection
+Resend activation email
 2. Plan until next Scrum
 
 

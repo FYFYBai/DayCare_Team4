@@ -1,0 +1,56 @@
+{% extends 'master.html.twig' %}
+
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Parent Dashboard</h1>
+    <p>Welcome, {{ user.name }}!</p>
+    
+    <h2>Your Children</h2>
+    <ul>
+        {% for child in children %}
+            <li>
+                {{ child.name }} - Date of Birth: {{ child.date_of_birth }}
+                {% if child.profile_photo_path %}
+                    <br>
+                    <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
+                {% endif %}
+            </li>
+        {% else %}
+            <li>No children registered yet. <a href="/child/list">Add children to your account</a>.</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Quick Actions</h2>
+    <ul>
+        <li><a href="/payment">Make Registration Payment</a></li>
+        <li><a href="/child/list">Manage Children</a></li>
+        <!-- Add more parent-specific actions here -->
+    </ul>
+    
+    <h2>Upcoming Events</h2>
+    <ul>
+        {% for event in events %}
+            <li>{{ event.name }} - {{ event.date }}</li>
+        {% else %}
+            <li>No upcoming events scheduled.</li>
+        {% endfor %}
+    </ul>
+    
+
+    <h2>Registration Payment Status</h2>
+    {% set payment = payments[0] %}
+    {% if payment and payment.payment_status == 'completed' %}
+        <div class="alert alert-success">
+            Registration payment completed on {{ payment.payment_date|date('Y-m-d') }}
+            for {{ payment.child_count }} child(ren).
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Registration payment pending. 
+            <a href="/payment" class="alert-link">Complete your registration payment</a>
+        </div>
+    {% endif %}
+    
+    <p><a href="/logout">Logout</a></p>
+{% endblock %}
