@@ -1,4 +1,5 @@
 <?php
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -68,7 +69,8 @@ use Slim\Psr7\Response as SlimResponse;
     }
 } */
 
-function sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody) {
+function sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody)
+{
     require_once __DIR__ . '/vendor/autoload.php';
 
     $env = $_ENV['APP_ENV'] ?? 'dev';
@@ -76,7 +78,7 @@ function sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody) {
 
     try {
         $mail->isSMTP();
-        
+
         if ($env === 'prod') {
             $mail->Host       = $_ENV['MAIL_HOST_PROD'];
             $mail->Username   = $_ENV['MAIL_USERNAME_PROD'];
@@ -108,19 +110,21 @@ function sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody) {
     }
 }
 
-function sendActivationEmail($toEmail, $toName, $activationLink) {
+function sendActivationEmail($toEmail, $toName, $activationLink)
+{
     $subject  = 'Activate Your Account';
     $htmlBody = "Click the following link to activate your account: <a href='{$activationLink}'>Activate Account</a>";
     $altBody  = "Copy and paste this link in your browser to activate your account: {$activationLink}";
-    
+
     return sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody);
 }
 
-function sendPasswordResetEmail($toEmail, $toName, $resetLink) {
+function sendPasswordResetEmail($toEmail, $toName, $resetLink)
+{
     $subject  = 'Reset Your Password';
     $htmlBody = "Click the following link to reset your password: <a href='{$resetLink}'>Reset Password</a>";
     $altBody  = "Copy and paste this link in your browser to reset your password: {$resetLink}";
-    
+
     return sendEmail($toEmail, $toName, $subject, $htmlBody, $altBody);
 }
 
@@ -130,7 +134,8 @@ function sendPasswordResetEmail($toEmail, $toName, $resetLink) {
  * @param string $recaptchaResponse The token from reCAPTCHA.
  * @return bool True if verification is successful.
  */
-function verifyReCaptcha($recaptchaResponse) {
+function verifyReCaptcha($recaptchaResponse)
+{
     $secret = $_ENV['RECAPTCHA_SECRET'] ?? 'your-default-key-here';
 
     if (empty($recaptchaResponse)) {
@@ -170,4 +175,24 @@ $checkRoleMiddleware = function ($requiredRole): callable {
         }
         return $handler->handle($request);
     };
+};
+
+/**
+ * Calculate age in years based on a given date of birth (YYYY-MM-DD).
+ *
+ * @param string $dateOfBirth The child's date of birth (e.g. '2018-04-15').
+ * @return int Age in years.
+ */
+function calculateAge($dateOfBirth)
+{
+    if (empty($dateOfBirth)) {
+        return 0;
+    }
+    // Create DateTime objects
+    $today = new DateTime('today');
+    $dob   = new DateTime($dateOfBirth);
+
+    // Calculate the difference in years
+    $age = $today->diff($dob)->y;
+    return $age;
 };
