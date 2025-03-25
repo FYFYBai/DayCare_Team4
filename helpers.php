@@ -158,15 +158,16 @@ function verifyReCaptcha($recaptchaResponse) {
  * @param string $requiredRole The role required to access a route.
  * @return Closure Middleware function.
  */
-$checkRoleMiddleware = function ($requiredRole) {
+$checkRoleMiddleware = function ($requiredRole): callable {
     return function (Request $request, RequestHandler $handler) use ($requiredRole): Response {
-        // Check if the session role is set and matches the required role.
+        // Retrieve the container from the global scope
+        global $container;
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== $requiredRole) {
+            $flash = $container->get(\Slim\Flash\Messages::class);
+            $flash->addMessage('error', 'Access denied. Please log in with appropriate credentials.');
             $response = new SlimResponse();
-            $response->getBody()->write("Access Denied.");
-            return $response->withStatus(403);
+            return $response->withHeader('Location', '/login')->withStatus(302);
         }
-        // If role check passes, delegate processing to the next middleware/handler.
         return $handler->handle($request);
     };
 };
