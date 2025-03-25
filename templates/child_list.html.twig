@@ -1,25 +1,47 @@
 {% extends "master.html.twig" %}
 
+{% block addHead %}
+<link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
 {% block content %}
-<h2>Your Children</h2>
+<div class="content-box">
+    <h2>Your Children</h2>
 
-<a href="/child/new" style="display:inline-block; margin-bottom:10px;">Add Child</a>
+    <!-- "Add Child" button, using your existing .btn-primary or a new custom style -->
+    <a href="/child/new" class="btn btn-primary mb-3">Add Child</a>
 
-{% if children is not empty %}
-    <ul>
-    {% for child in children %}
-        <li>
-            <strong>{{ child.name }}</strong> (DOB: {{ child.date_of_birth }})
-            <br>
-            {% if child.profile_photo_path %}
-                <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="100">
-            {% endif %}
-            <br>
-            <a href="/child/{{ child.id }}/edit">Edit</a>
-        </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>You have not added any children yet.</p>
-{% endif %}
+    {% if children is not empty %}
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Photo</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for child in children %}
+                <tr>
+                    <td>{{ child.name }}</td>
+                    <td>{{ child.date_of_birth }}</td>
+                    <td>
+                        {% if child.profile_photo_path %}
+                            <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="80">
+                        {% else %}
+                            No Photo
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/child/{{ child.id }}/edit" class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have not added any children yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
