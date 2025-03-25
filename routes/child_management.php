@@ -54,9 +54,9 @@ $app->group('/child', function (RouteCollectorProxy $group) {
         $photoPath     = ''; // default to empty or 'default.png' if you want
 
         if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png'];
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
-                $response->getBody()->write("Invalid file type. Only JPEG and PNG allowed.");
+                $response->getBody()->write("Invalid file type. Only JPEG, JPG and PNG allowed.");
                 return $response->withStatus(400);
             }
             if ($profilePhoto->getSize() > (2 * 1024 * 1024)) {
@@ -141,9 +141,9 @@ $app->group('/child', function (RouteCollectorProxy $group) {
         $photoPath     = $child['profile_photo_path']; // Keep existing if no new upload
 
         if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png'];
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
-                $response->getBody()->write("Invalid file type. Only JPEG and PNG allowed.");
+                $response->getBody()->write("Invalid file type. Only JPEG, JPG and PNG allowed.");
                 return $response->withStatus(400);
             }
             if ($profilePhoto->getSize() > (2 * 1024 * 1024)) {
