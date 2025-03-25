@@ -185,14 +185,13 @@ debugging and add modal for all the validations if the payment didn't go through
 1. Done since last scrum
 inserted some data in db for testing
 planning
-
 2. Plan until next Scrum
 fix email activation feature on remote host
 educatore-dashboard (implement attendance tracking feature)
 attendance
 watch a few remaining videos
 home page needs changes, if a user is logged in, it should show on home page
-
+fix image upload from remote host instead of static file upload
 3. Need assistance / figure things out
 fix email activation feature on remote host (might  be mailtrap is not suitable)
 cPanel SMTP set-up
@@ -215,9 +214,12 @@ cPanel SMTP set-up
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+RBA and authentication: fixed redirection, error handling, validation, smpt issues on remote host
+fixed home page
 2. Plan until next Scrum
-
+educatore-dashboard (implement attendance tracking feature)
+attendance
+watch a few remaining videos
 
 3. Need assistance / figure things out
 
