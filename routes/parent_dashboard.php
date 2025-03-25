@@ -14,9 +14,18 @@ $app->get('/parent-dashboard', function (Request $request, Response $response, $
     // Get upcoming events (if you have an events table)
     $events = []; // Replace with actual DB query if you have events
     
+    // Get payment information
+    $payments = DB::query("SELECT * FROM payments 
+        WHERE user_id = %i 
+        AND isDeleted = 0 
+        ORDER BY payment_date DESC", 
+        $_SESSION['user_id']
+    );
+    
     return $this->get(Twig::class)->render($response, 'parent-dashboard.html.twig', [
         'user' => $user,
         'children' => $children,
-        'events' => $events
+        'events' => $events,
+        'payments' => $payments
     ]);
 })->add($checkRoleMiddleware('parent')); 
