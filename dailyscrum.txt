@@ -175,11 +175,11 @@ debugging and add modal for all the validations if the payment didn't go through
 
  Qi He
 1. Done since last scrum
-
+still troubleshooting, admin design
 2. Plan until next Scrum
-   
+finish troubleshooting and add admin dashboard and routes
 3. Need assistance / figure things out
-
+debugging 404 error
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
