@@ -20,7 +20,7 @@
 
         {# ✅ Flash messages #}
         {% if messages.success %}
-          <div class="alert alert-success">{{ messages.success[0]|raw }}</div> {# remove raw in prod #}
+          <div class="alert alert-success">{{ messages.success[0] }}</div> {# remove raw in prod #}
         {% endif %}
         {% if messages.error %}
           <div class="alert alert-danger">{{ messages.error[0] }}</div>
@@ -57,7 +57,7 @@
             </div>
             
             <div class="mb-3">
-                <label for="profile_photo" class="form-label">Profile Photo (optional for parents):</label>
+                <label for="profile_photo" class="form-label">Profile Photo (optional):</label>
                 <input type="file" name="profile_photo" id="profile_photo" class="form-control" accept="image/*">
             </div>
             
