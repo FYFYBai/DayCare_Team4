@@ -17,7 +17,7 @@ $app->get('/login', function (Request $request, Response $response, $args) {
         'messages' => $messages,
         'formData' => $formData
     ]);
-})->setName('login');  // <-- Set the route name here
+})->setName('login'); 
 
 // Process login form submission
 $app->post('/login', function (Request $request, Response $response, $args) {
@@ -83,4 +83,61 @@ $app->get('/logout', function (Request $request, Response $response, $args) {
     session_unset();
     session_destroy();
     return $response->withHeader('Location', '/login')->withStatus(302);
+});
+
+// GET route for Resend Activation Email Form
+$app->get('/resend-activation', function (Request $request, Response $response, $args) {
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    return $this->get(Twig::class)->render($response, 'resend-activation.html.twig', [
+        'messages' => $flash->getMessages()
+    ]);
+})->setName('resend-activation');
+
+// POST route for processing the Resend Activation Email request
+$app->post('/resend-activation', function (Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    $email = trim($data['email'] ?? '');
+    
+    $flash  = $this->get(\Slim\Flash\Messages::class);
+    $router = RouteContext::fromRequest($request)->getRouteParser();
+    
+    // Validate email input
+    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $flash->addMessage('error', "Please enter a valid email address.");
+        return $response->withHeader('Location', $router->urlFor('resend-activation'))->withStatus(302);
+    }
+    
+    // Check for user in the database
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE email = %s AND isDeleted = 0", $email);
+    // Use a generic message to avoid account enumeration
+    if (!$user) {
+        $flash->addMessage('success', "If the email exists, an activation email has been sent.");
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
+    }
+    
+    // If account is already activated, inform the user
+    if ($user['activation_status'] == 1) {
+        $flash->addMessage('info', "Your account is already activated. Please log in.");
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
+    }
+    
+    // Generate new activation token
+    $activation_token = bin2hex(random_bytes(32));
+    DB::update('users', ['activation_token' => $activation_token], "email=%s", $email);
+    
+    // Build activation link (adjust domain/port as needed)
+    $activation_link = "https://team4.fsd13.ca/activate?token=" . $activation_token;
+    
+    // Send the activation email using your helper function
+    if (sendActivationEmail($email, $user['name'], $activation_link)) {
+        $devLink = "";
+        if (($_ENV['APP_ENV'] ?? 'dev') !== 'prod') {
+            $devLink = "<br><strong>Dev/Test:</strong> <a href='{$activation_link}' target='_blank'>Click here to activate</a>";
+        }
+        $flash->addMessage('success', "Activation email sent. Please check your inbox." . $devLink);
+    } else {
+        $flash->addMessage('error', "Error sending activation email. Please try again.");
+    }
+    
+    return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
 });

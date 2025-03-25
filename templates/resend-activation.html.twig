@@ -1,0 +1,27 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Resend Activation Email - DayCare System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Resend Activation Email</h1>
+    
+    {% if messages.success %}
+      <div class="alert alert-success">{{ messages.success[0]|raw }}</div>
+    {% endif %}
+    {% if messages.error %}
+      <div class="alert alert-danger">{{ messages.error[0] }}</div>
+    {% endif %}
+    {% if messages.info %}
+      <div class="alert alert-info">{{ messages.info[0] }}</div>
+    {% endif %}
+    
+    <form action="/resend-activation" method="post">
+        <div class="mb-3">
+            <label for="email" class="form-label">Enter your registered email:</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Resend Activation Email</button>
+    </form>
+</div>
+{% endblock %}

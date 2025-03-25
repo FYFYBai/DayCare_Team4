@@ -44,7 +44,7 @@ $app->post('/register', function (Request $request, Response $response, $args) {
         $flash->addMessage('error', "Invalid email format.");
         return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
     }
-    
+
     // Validate password strength
     if (
         strlen($password) < 8 ||
@@ -85,22 +85,20 @@ $app->post('/register', function (Request $request, Response $response, $args) {
 
     // Handle profile photo upload for educators only (parents use default)
     $filename = 'default.png';
-    if ($role !== 'parent') {
-        $uploadedFiles = $request->getUploadedFiles();
-        $profilePhoto = $uploadedFiles['profile_photo'] ?? null;
-        if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png'];
-            if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
-                $flash->addMessage('error', "Invalid file type. Only JPEG and PNG allowed.");
-                return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
-            }
-            if ($profilePhoto->getSize() > (2 * 1024 * 1024)) {
-                $flash->addMessage('error', "File size exceeds 2MB limit.");
-                return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
-            }
-            $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
-            $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
+    $uploadedFiles = $request->getUploadedFiles();
+    $profilePhoto = $uploadedFiles['profile_photo'] ?? null;
+    if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
+        $allowedTypes = ['image/jpeg', 'image/png'];
+        if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
+            $flash->addMessage('error', "Invalid file type. Only JPEG and PNG allowed.");
+            return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
         }
+        if ($profilePhoto->getSize() > (2 * 1024 * 1024)) {
+            $flash->addMessage('error', "File size exceeds 2MB limit.");
+            return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
+        }
+        $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
+        $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
     }
 
     // Generate activation token
@@ -135,22 +133,27 @@ $app->post('/register', function (Request $request, Response $response, $args) {
         $flash->addMessage('error', "Registered, but activation email failed to send.");
     }
 
-    return $response->withHeader('Location', $router->urlFor('register'))->withStatus(302);
+    return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
 });
 
 // Activation route (GET)
 $app->get('/activate', function (Request $request, Response $response, $args) {
+    $flash = $this->get(\Slim\Flash\Messages::class);
+    $router = RouteContext::fromRequest($request)->getRouteParser();
+
     $token = $request->getQueryParams()['token'] ?? null;
     if (!$token) {
-        $response->getBody()->write("No activation token provided.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "No activation token provided.");
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
     $updated = DB::update('users', ['activation_status' => 1], "activation_token=%s", $token);
     if ($updated) {
-        // Redirect to login after successful activation
-        return $response->withHeader('Location', '/login')->withStatus(302);
+        $flash->addMessage('success', "Account activated successfully. You can now log in.");
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     } else {
-        $response->getBody()->write("Invalid or expired activation token.");
-        return $response->withStatus(400);
+        $flash->addMessage('error', "Invalid or expired activation token.");
+        return $response->withHeader('Location', $router->urlFor('login'))->withStatus(302);
     }
 });
+
+
