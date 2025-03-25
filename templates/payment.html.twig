@@ -128,83 +128,6 @@
     background-color: #0b5ed7;
 }
 
-/* Modal styles */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    display: none;
-    z-index: 1000;
-}
-
-.modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 1001;
-    display: none;
-}
-
-.modal-header {
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.modal-header-error {
-    background-color: #dc3545;
-    color: white;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-.modal-header-warning {
-    background-color: #ffc107;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-.modal-body {
-    padding: 1rem;
-}
-
-.modal-footer {
-    padding: 1rem;
-    border-top: 1px solid #dee2e6;
-    text-align: right;
-}
-
-.modal-close-button {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.modal-action-button {
-    padding: 0.375rem 0.75rem;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-}
-
-.show {
-    display: block;
-}
 </style>
 {% endblock %}
 
@@ -253,39 +176,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- Modal Backdrop -->
-<div class="modal-backdrop" id="modalBackdrop"></div>
-
-<!-- Error Modal -->
-<div class="modal" id="errorModal">
-    <div class="modal-header modal-header-error">
-        <h5>Error</h5>
-        <button type="button" class="modal-close-button" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-        {{ error ?? 'An error occurred during the payment process.' }}
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="modal-action-button" data-dismiss="modal">Close</button>
-    </div>
-</div>
-
-<!-- Payment Canceled Modal -->
-<div class="modal" id="canceledModal">
-    <div class="modal-header modal-header-warning">
-        <h5>Payment Canceled</h5>
-        <button type="button" class="modal-close-button" data-dismiss="modal">&times;</button>
-    </div>
-    <div class="modal-body">
-        <p>Your payment was canceled. You can try again when you're ready.</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="modal-action-button" data-dismiss="modal">Close</button>
-    </div>
-</div>
-
-{% block scripts %}
+{% block addJS %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Simplified variable declarations
@@ -297,49 +190,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Registration fee per child
     const registrationFee = {{ paymentDetails.baseRegistrationFee }};
-    
-    // Modal handling
-    const handleModals = () => {
-        const modalBackdrop = document.getElementById('modalBackdrop');
-        
-        // Show modal function
-        const showModal = (modalId) => {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modalBackdrop.classList.add('show');
-                modal.classList.add('show');
-            }
-        };
-        
-        // Close button handlers
-        document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
-            button.addEventListener('click', function() {
-                const modal = this.closest('.modal');
-                modalBackdrop.classList.remove('show');
-                modal.classList.remove('show');
-            });
-        });
-        
-        // Click outside to close
-        modalBackdrop.addEventListener('click', function() {
-            document.querySelectorAll('.modal.show').forEach(modal => {
-                modalBackdrop.classList.remove('show');
-                modal.classList.remove('show');
-            });
-        });
-        
-        // Show modals based on conditions
-        {% if error is defined %}
-            showModal('errorModal');
-        {% endif %}
-        
-        {% if app.request.query.get('canceled') %}
-            showModal('canceledModal');
-        {% endif %}
-    };
-    
-    // Initialize modals
-    handleModals();
     
     // Update pricing based on child count
     function updatePricing() {
@@ -383,5 +233,4 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePricing();
 });
 </script>
-{% endblock %}
 {% endblock %} 

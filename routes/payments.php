@@ -13,11 +13,27 @@ $app->get('/payment', function (Request $request, Response $response) {
         return $response->withHeader('Location', '/login')->withStatus(302);
     }
     
+    // Check if user has any completed payments
+    $existingPayment = DB::queryFirstRow("SELECT * FROM payments 
+        WHERE user_id = %i 
+        AND payment_status = 'completed' 
+        AND isDeleted = 0", 
+        $userId
+    );
+    
+    if ($existingPayment) {
+        // Redirect to dashboard with message that payment is already made
+        $flash = $this->get(\Slim\Flash\Messages::class);
+        $flash->addMessage('info', 'You have already completed the registration payment.');
+        return $response->withHeader('Location', '/parent-dashboard')->withStatus(302);
+    }
+    
     // Calculate the payment amount
     $paymentDetails = calculatePaymentAmount($userId);
     
-    $view = Twig::fromRequest($request);
-    return $view->render($response, 'payment.html.twig', [
+    // Try the simplified test template first
+    return $this->get(Twig::class)->render($response, 'payment.html.twig', [
+        'userId' => $userId,
         'paymentDetails' => $paymentDetails
     ]);
 });
@@ -45,7 +61,10 @@ $app->post('/checkout', function (Request $request, Response $response, $args) u
             'user_id' => $userId,
             'amount' => $paymentDetails['totalAmount'],
             'payment_date' => date('Y-m-d H:i:s'),
-            'payment_status' => 'pending'
+            'payment_status' => 'pending',
+            'isDeleted' => 0,
+            'child_count' => $inputChildrenCount,
+            'stripe_session_id' => $checkout_session->id
         ]);
         
         // Store payment ID in session to retrieve it later
@@ -109,23 +128,53 @@ $app->get('/payment-success', function (Request $request, Response $response) us
     $userId = $_SESSION['user_id'] ?? null;
     $paymentId = $_SESSION['pending_payment_id'] ?? null;
     
-    if ($paymentId && $userId) {
-        // Update payment status to completed
-        DB::update('payments', [
-            'payment_status' => 'completed'
-        ], 'id=%i', $paymentId);
-        
-        $logger->info('Payment marked as completed', [
-            'payment_id' => $paymentId,
-            'user_id' => $userId
-        ]);
-        
-        // Clear the pending payment from session
-        unset($_SESSION['pending_payment_id']);
+    if (!$paymentId || !$userId) {
+        return $response->withHeader('Location', '/payment?error=invalid_session')->withStatus(302);
     }
     
-    $view = Twig::fromRequest($request);
-    return $view->render($response, 'payment-success.html.twig');
+    // Verify the payment exists and is pending
+    $payment = DB::queryFirstRow("SELECT * FROM payments 
+        WHERE id = %i 
+        AND user_id = %i 
+        AND payment_status = 'pending'
+        AND isDeleted = 0", 
+        $paymentId, $userId
+    );
+    
+    if (!$payment) {
+        return $response->withHeader('Location', '/payment?error=invalid_payment')->withStatus(302);
+    }
+    
+    try {
+        // Verify with Stripe
+        \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        $session = \Stripe\Checkout\Session::retrieve($payment['stripe_session_id']);
+        
+        if ($session->payment_status === 'paid') {
+            // Update payment status
+            DB::update('payments', [
+                'payment_status' => 'completed',
+                'payment_date' => date('Y-m-d H:i:s')
+            ], "id=%i", $paymentId);
+            
+            // Clear the pending payment from session
+            unset($_SESSION['pending_payment_id']);
+            
+            // Log success
+            $logger->info('Payment completed successfully', [
+                'payment_id' => $paymentId,
+                'user_id' => $userId,
+                'stripe_session_id' => $session->id
+            ]);
+            
+            return $this->get(Twig::class)->render($response, 'payment-success.html.twig');
+        } else {
+            throw new Exception('Payment not completed');
+        }
+    } catch (Exception $e) {
+        $logger->error('Payment verification failed: ' . $e->getMessage());
+        return $response->withHeader('Location', '/payment?error=verification_failed')->withStatus(302);
+    }
 });
 
 // fucntion to calculate the payment amount

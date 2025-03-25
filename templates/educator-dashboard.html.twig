@@ -1,22 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Educator Dashboard - DayCare System</title>
-</head>
-<body>
+{% extends "master.html.twig" %}
+
+{% block title %}Educator Dashboard - DayCare System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
     <h1>Educator Dashboard</h1>
     <p>Welcome, {{ user.name }}!</p>
     
-    <h2>Your Classes/Child Profiles</h2>
-    <ul>
+    <h2>Your Classes / Child Profiles</h2>
+    <ul class="list-group">
         {% for child in children %}
-            <li>{{ child.name }} - Age: {{ child.age }}</li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ child.name }}
+                <span class="badge bg-primary rounded-pill">Age: {{ child.age }}</span>
+            </li>
         {% else %}
-            <li>No child profiles assigned.</li>
+            <li class="list-group-item">No child profiles assigned.</li>
         {% endfor %}
     </ul>
     
-    <p><a href="/logout">Logout</a></p>
-</body>
-</html>
+    <div class="mt-4">
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+{% endblock %}

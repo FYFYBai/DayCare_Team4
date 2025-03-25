@@ -1,32 +1,90 @@
 {% extends "master.html.twig" %}
 
+{% block addHead %}
+<link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
 {% block content %}
-<h2>Edit User</h2>
-<form method="post" action="/admin/user/{{ user.id }}/edit">
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" value="{{ user.name }}" required>
+<div class="content-box">
+    <h2>Edit User (ID: {{ user.id }})</h2>
+    <table class="custom-table">
+        <tr>
+            <th>Field</th>
+            <th>Current Value</th>
+            <th>Update</th>
+        </tr>
 
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" value="{{ user.email }}" required>
+        <!-- NAME row -->
+        <tr>
+            <td>Name</td>
+            <td>{{ user.name }}</td>
+            <td>
+                <form method="post" action="/admin/user/{{ user.id }}/edit">
+                    <input type="hidden" name="column" value="name">
+                    <input type="text" name="newValue" placeholder="New Name">
+                    <button type="submit" class="btn btn-primary mt-3">Update</button>
+                </form>
+            </td>
+        </tr>
 
-    <!-- Optional: let admin change role -->
-    <label for="role">Role:</label>
-    <select name="role" id="role">
-        <option value="parent"   {% if user.role == 'parent'   %}selected{% endif %}>Parent</option>
-        <option value="educator" {% if user.role == 'educator' %}selected{% endif %}>Educator</option>
-        <option value="manager"  {% if user.role == 'manager'  %}selected{% endif %}>Manager</option>
-        <option value="admin"    {% if user.role == 'admin'    %}selected{% endif %}>Admin</option>
-    </select>
+        <!-- EMAIL row -->
+        <tr>
+            <td>Email</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <form method="post" action="/admin/user/{{ user.id }}/edit">
+                    <input type="hidden" name="column" value="email">
+                    <input type="text" name="newValue" placeholder="New Email">
+                    <button type="submit" class="btn btn-primary mt-3">Update</button>
+                </form>
+            </td>
+        </tr>
 
-    <br><br>
-    <button type="submit">Update User</button>
-</form>
+        <!-- ROLE row -->
+        <tr>
+            <td>Role</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <form method="post" action="/admin/user/{{ user.id }}/edit">
+                    <input type="hidden" name="column" value="role">
+                    <select name="newValue">
+                        <option value="parent"   {% if user.role == 'parent'   %}selected{% endif %}>Parent</option>
+                        <option value="educator" {% if user.role == 'educator' %}selected{% endif %}>Educator</option>
+                        <option value="manager"  {% if user.role == 'manager'  %}selected{% endif %}>Manager</option>
+                        <option value="admin"    {% if user.role == 'admin'    %}selected{% endif %}>Admin</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary mt-3">Update</button>
+                </form>
+            </td>
+        </tr>
 
-<hr>
+        <!-- PASSWORD row -->
+        <tr>
+            <td>Password</td>
+            <td>********</td>
+            <td>
+                <form method="post" action="/admin/user/{{ user.id }}/edit">
+                    <input type="hidden" name="column" value="password">
+                    <input type="password" name="newValue" placeholder="New Password">
+                    <button type="submit" class="btn btn-primary mt-3">Update</button>
+                </form>
+            </td>
+        </tr>
 
-<!-- Separate form to delete user -->
-<form method="post" action="/admin/user/{{ user.id }}/edit">
-    <input type="hidden" name="action" value="delete">
-    <button type="submit" style="background-color: red; color: white;">Delete User</button>
-</form>
+        <!-- isAdmin row -->
+        <tr>
+            <td>isAdmin</td>
+            <td>{{ user.isAdmin }}</td>
+            <td><!-- isAdmin updated automatically when role=admin --></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- Delete User Form -->
+    <form method="post" action="/admin/user/{{ user.id }}/edit" onsubmit="return confirm('Are you sure you want to delete this user?');">
+        <input type="hidden" name="action" value="delete">
+        <button type="submit" style="background-color: red; color: white;">Delete User</button>
+    </form>
+</div>
 {% endblock %}

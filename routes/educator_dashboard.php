@@ -5,7 +5,7 @@ use Slim\Views\Twig;
 
 // Educator dashboard route – restricted to educators
 $app->get('/educator-dashboard', function (Request $request, Response $response, $args) {
-    // Retrieve educator info and child profiles (adjust query as needed)
+    // Retrieve educator info and assigned child profiles (adjust query as needed)
     $user = DB::queryFirstRow("SELECT * FROM users WHERE id = %d", $_SESSION['user_id']);
     $children = DB::query("SELECT * FROM children WHERE educator_id = %d", $_SESSION['user_id']);
     
@@ -14,3 +14,4 @@ $app->get('/educator-dashboard', function (Request $request, Response $response,
         'children' => $children
     ]);
 })->add($checkRoleMiddleware('educator'));
+
