@@ -22,4 +22,11 @@
     <br><br>
     <button type="submit">Save Changes</button>
 </form>
+
+<hr>
+
+<!-- Delete Child Form -->
+<form method="post" action="/child/{{ child.id }}/delete" onsubmit="return confirm('Are you sure you want to delete this child profile?');">
+    <button type="submit" style="background-color: red; color: white;">Delete Child</button>
+</form>
 {% endblock %}
