@@ -37,5 +37,20 @@
         {% endfor %}
     </ul>
     
+
+    <h2>Registration Payment Status</h2>
+    {% set payment = payments[0] %}
+    {% if payment and payment.payment_status == 'completed' %}
+        <div class="alert alert-success">
+            Registration payment completed on {{ payment.payment_date|date('Y-m-d') }}
+            for {{ payment.child_count }} child(ren).
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Registration payment pending. 
+            <a href="/payment" class="alert-link">Complete your registration payment</a>
+        </div>
+    {% endif %}
+    
     <p><a href="/logout">Logout</a></p>
 {% endblock %}
