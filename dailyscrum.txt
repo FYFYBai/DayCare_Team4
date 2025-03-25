@@ -242,7 +242,7 @@ fix image upload from remote host instead of static file upload (if not done ton
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
-
+Perfected the auth feature, improved redirection
 2. Plan until next Scrum
 
 
