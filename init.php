@@ -25,10 +25,10 @@ $log->pushProcessor(function ($record) {
     return $record;
 });
 
-// Register Logger (might remove, TODO:testing)
+/* // Register Logger (might remove, TODO:testing)
 $container->set(Logger::class, function() use ($log) {
     return $log;
-});
+}); */
 
 
 // Setup database using MeekroDB (adjust as needed)
