@@ -207,9 +207,10 @@ Importing everything from the database for the history and create the success pa
 
  Qi He
 1. Done since last scrum
-
+Fixed child functionalities, child list, child create, image upload and display, style refinement, child create.
+link above features to parent dashboard
 2. Plan until next Scrum
-   
+design admin and manager functionalities 
 3. Need assistance / figure things out
 
  ---------------------------------------------------------
@@ -235,11 +236,10 @@ fix image upload from remote host instead of static file upload (if not done ton
 
  Qi He
 1. Done since last scrum
-
+created admin dashboard, user list, user edit, user promotion, user delete and partial match search bar
 2. Plan until next Scrum
-   
+complete admin and manager routes
 3. Need assistance / figure things out
-
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
