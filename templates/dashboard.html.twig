@@ -21,3 +21,67 @@
     <p><a href="/child/list">Child List</a></p>
 </body>
 </html>
+
+{# <!-- Attendance Chart Section -->
+            <div class="mb-4">
+                <h2>Attendance Trend (Last 6 Months)</h2>
+                <canvas id="attendanceChart" width="400" height="200"></canvas>
+            </div> #}
+
+{# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    // Fetch attendance data from API for the overall chart
+    fetch("/api/attendance-data")
+      .then(response => response.json())
+      .then(data => {
+          const labels = data.map(item => item.registration_date);
+          const presentData = data.map(item => parseInt(item.present));
+          const absentData = data.map(item => parseInt(item.absent));
+
+          const ctx = document.getElementById('attendanceChart').getContext('2d');
+          new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: labels,
+                  datasets: [
+                      {
+                          label: 'Present',
+                          data: presentData,
+                          borderColor: 'green',
+                          backgroundColor: 'rgba(0, 128, 0, 0.2)',
+                          fill: true
+                      },
+                      {
+                          label: 'Absent',
+                          data: absentData,
+                          borderColor: 'red',
+                          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                          fill: true
+                      }
+                  ]
+              },
+              options: {
+                  responsive: true,
+                  scales: {
+                      x: {
+                          title: {
+                              display: true,
+                              text: 'Date'
+                          }
+                      },
+                      y: {
+                          title: {
+                              display: true,
+                              text: 'Count'
+                          },
+                          beginAtZero: true
+                      }
+                  }
+              }
+          });
+      })
+      .catch(error => console.error("Error fetching attendance data:", error));
+});
+</script>
+{% endblock %} #}
