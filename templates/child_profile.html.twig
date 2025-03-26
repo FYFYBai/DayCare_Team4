@@ -1,0 +1,12 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Child Profile - DayCare System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ child.name }}'s Profile</h1>
+    <p>Date of Birth: {{ child.date_of_birth|date("Y-m-d") }}</p>
+    {# Add additional child details as needed #}
+    <a href="/child/list" class="btn btn-secondary">Back to Child List</a>
+</div>
+{% endblock %}

@@ -29,11 +29,11 @@
                 {% for child in children %}
                 <tr>
                     <td>{{ child.name }}</td>
-                    <td>
-                        <input type="radio" name="attendance[{{ child.id }}]" value="present" required>
+                      <td>
+                        <input type="radio" name="attendance[{{ child.id }}]" value="present" {% if reg and reg.status == 'present' %}checked{% endif %} required>
                     </td>
                     <td>
-                        <input type="radio" name="attendance[{{ child.id }}]" value="absent" required>
+                        <input type="radio" name="attendance[{{ child.id }}]" value="absent" {% if reg and reg.status == 'absent' %}checked{% endif %} required>
                     </td>
                 </tr>
                 {% else %}

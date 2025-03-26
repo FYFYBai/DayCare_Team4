@@ -3,8 +3,8 @@ DELIMITER $$
 CREATE PROCEDURE InsertAttendanceLastMonth()
 BEGIN
     DECLARE currentDate DATE;
-    -- Start date: 30 days before today
-    SET currentDate = DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+    -- Start date: 6v months before today
+    SET currentDate = DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
     
     WHILE currentDate <= CURDATE() DO
         -- Insert one record for each child on the current date.
@@ -19,4 +19,4 @@ END$$
 DELIMITER ;
 
 -- Call the procedure to insert attendance data for the past month.
-CALL InsertAttendanceLastMonth();
+CALL InsertAttendanceLastSixMonths();
