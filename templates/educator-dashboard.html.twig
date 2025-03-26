@@ -8,16 +8,33 @@
     <p>Welcome, {{ user.name }}!</p>
     
     <h2>Your Classes / Child Profiles</h2>
-    <ul class="list-group">
+    <ul class="list-group mb-4">
         {% for child in children %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 {{ child.name }}
-                <span class="badge bg-primary rounded-pill">Age: {{ child.age }}</span>
+                {% set registration = null %}
+                {% for reg in registrations %}
+                    {% if reg.child_id == child.id %}
+                        {% set registration = reg %}
+                    {% endif %}
+                {% endfor %}
+                {% if registration %}
+                    <span class="badge bg-success">Marked: {{ registration.status|capitalize }}</span>
+                {% else %}
+                    <span class="badge bg-warning">Not marked today</span>
+                {% endif %}
             </li>
         {% else %}
             <li class="list-group-item">No child profiles assigned.</li>
         {% endfor %}
     </ul>
+    
+    <!-- Link to the dedicated attendance page -->
+    <div class="mb-4">
+        <a href="/educator/attendance" class="btn btn-primary">Mark Today's Attendance</a>
+    </div>
+    
+    <!-- Future sections for dynamic charts and calendar integration can be added here -->
     
     <div class="mt-4">
         <a href="/logout" class="btn btn-danger">Logout</a>
