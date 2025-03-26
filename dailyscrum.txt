@@ -230,7 +230,7 @@ fix image upload from remote host instead of static file upload
 1. Done since last scrum
 
 2. Plan until next Scrum
-
+fix image upload from remote host instead of static file upload 
 3. Need assistance / figure things out
 ------------------------------------------------------
 
@@ -245,11 +245,11 @@ complete admin and manager routes
 1. Done since last scrum
 Perfected the auth feature, improved redirection
 Added Resend activation email feature
-Not a productive day 
+started educatore-dashboard (implement attendance tracking feature)
+
 2. Plan until next Scrum
-fix image upload from remote host instead of static file upload 
-educatore-dashboard (implement attendance tracking feature)
-attendance
+cont. educatore-dashboard (implement attendance tracking feature)
+
 3. Need assistance / figure things out
 
 ==========================================================
