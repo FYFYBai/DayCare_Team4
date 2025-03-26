@@ -1,0 +1,18 @@
+{# templates/admin_dashboard.html.twig #}
+{% extends "master.html.twig" %}
+
+{% block addHead %}
+    <link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, Admin! Choose an action below:</p>
+
+    <ul>
+        <li><a href="/admin/users">Manage Users</a></li>
+        {# Add more admin-related links as needed #}
+    </ul>
+</div>
+{% endblock %}

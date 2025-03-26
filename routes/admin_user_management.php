@@ -1,7 +1,9 @@
 <?php
+// routes/admin_user_management.php
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
 
 /**
@@ -12,19 +14,35 @@ use Slim\Views\Twig;
  * 3) POST route to update or delete user profile
  */
 
-$app->group('/admin', function () use ($app) {
+$app->group('/admin', function (RouteCollectorProxy $group) {
 
-    // (1) GET /admin/users -> List all non-deleted users
-    $app->get('/users', function (Request $request, Response $response, $args) {
-        $users = DB::query("SELECT * FROM users WHERE isDeleted=0");
+    // (1) GET /admin/users -> List all non-deleted users, with optional search
+    $group->get('/users', function (Request $request, Response $response, array $args) {
+        // Retrieve query parameters
+        $params       = $request->getQueryParams();
+        $searchEmail  = trim($params['searchEmail'] ?? '');
+
+        // If searchEmail is not empty, do a partial match search; otherwise fetch all
+        if ($searchEmail !== '') {
+            $users = DB::query(
+                "SELECT * FROM users 
+                 WHERE isDeleted=0 
+                   AND email LIKE %s", 
+                '%' . $searchEmail . '%'
+            );
+        } else {
+            $users = DB::query("SELECT * FROM users WHERE isDeleted=0");
+        }
+
         return $this->get(Twig::class)->render($response, 'admin_user_list.html.twig', [
-            'users' => $users
+            'users'       => $users,
+            'searchEmail' => $searchEmail
         ]);
     });
 
     // (2) GET /admin/user/{userId}/edit -> Show user info in a table
-    $app->get('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
-        $userId = (int)$args['userId'];
+    $group->get('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
+        $userId = (int) $args['userId'];
 
         // Fetch the user from DB, ensuring they're not soft-deleted
         $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
@@ -40,10 +58,10 @@ $app->group('/admin', function () use ($app) {
     });
 
     // (3) POST /admin/user/{userId}/edit -> Update or delete user profile
-    $app->post('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
-        $userId = (int)$args['userId'];
+    $group->post('/user/{userId}/edit', function (Request $request, Response $response, array $args) {
+        $userId = (int) $args['userId'];
 
-        // Fetch the user again
+        // Fetch the user again to ensure they still exist and aren't soft-deleted
         $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
         if (!$user) {
             $response->getBody()->write("User not found or already deleted.");
@@ -70,14 +88,14 @@ $app->group('/admin', function () use ($app) {
             return $response->withStatus(400);
         }
 
-        // Prepare a list of valid columns the admin can update
+        // Valid columns that can be updated
         $allowedColumns = ['name', 'email', 'role', 'password'];
         if (!in_array($column, $allowedColumns)) {
             $response->getBody()->write("Invalid or uneditable column.");
             return $response->withStatus(400);
         }
 
-        // We'll build the $updateData array to pass to DB::update
+        // Build the $updateData array to pass to DB::update
         $updateData = [];
 
         switch ($column) {
@@ -124,7 +142,7 @@ $app->group('/admin', function () use ($app) {
                 break;
         }
 
-        // Perform the update
+        // Perform the update in the database
         DB::update('users', $updateData, "id=%i", $userId);
 
         // Redirect back so the admin can see the updated info
