@@ -17,6 +17,7 @@ require_once __DIR__ . '/routes/parent_dashboard.php';
 require_once __DIR__ . '/routes/payments.php';
 require_once __DIR__ . '/routes/child_management.php';
 require_once __DIR__ . '/routes/admin_user_management.php';
+require_once __DIR__ . '/routes/admin_dashboard.php';
 
 
 // You can include other route modules (e.g., admin routes, testing routes) here

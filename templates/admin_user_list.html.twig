@@ -7,31 +7,43 @@
 {% block content %}
 <div class="content-box">
     <h2>All Users</h2>
-    <table class="custom-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>isAdmin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for u in users %}
-            <tr>
-                <td>{{ u.id }}</td>
-                <td>{{ u.name }}</td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.role }}</td>
-                <td>{{ u.isAdmin }}</td>
-                <td>
-                    <a href="/admin/user/{{ u.id }}/edit" class="btn btn-primary">Edit</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+    <!-- Search Form -->
+    <form method="get" action="/admin/users" style="margin-bottom: 20px;">
+        <input type="text" name="searchEmail" placeholder="Search by Email" 
+               value="{{ searchEmail|default('') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if users is empty %}
+        <p>No results found{% if searchEmail %} for "{{ searchEmail }}"{% endif %}.</p>
+    {% else %}
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>isAdmin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.role }}</td>
+                    <td>{{ u.isAdmin }}</td>
+                    <td>
+                        <a href="/admin/user/{{ u.id }}/edit" class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </div>
 {% endblock %}
