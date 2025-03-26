@@ -221,7 +221,7 @@ fixed home page
 educatore-dashboard (implement attendance tracking feature)
 attendance
 watch a few remaining videos
-fix image upload from remote host instead of static file upload (if not done tonight)
+fix image upload from remote host instead of static file upload 
 3. Need assistance / figure things out
 
 ==========================================================
@@ -244,10 +244,12 @@ fix image upload from remote host instead of static file upload (if not done ton
  Ritu Arora
 1. Done since last scrum
 Perfected the auth feature, improved redirection
-Resend activation email
+Added Resend activation email feature
+Not a productive day 
 2. Plan until next Scrum
-
-
+fix image upload from remote host instead of static file upload 
+educatore-dashboard (implement attendance tracking feature)
+attendance
 3. Need assistance / figure things out
 
 ==========================================================
