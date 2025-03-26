@@ -13,6 +13,8 @@ require_once __DIR__ . '/routes/password_reset.php';
 require_once __DIR__ . '/routes/dashboard.php';
 require_once __DIR__ . '/routes/educator_dashboard.php';
 require_once __DIR__ . '/routes/educator_attendance.php';
+require_once __DIR__ . '/routes/educator_profile.php';
+require_once __DIR__ . '/routes/api.php';
 require_once __DIR__ . '/routes/parent_dashboard.php'; 
 require_once __DIR__ . '/routes/payments.php';
 require_once __DIR__ . '/routes/child_management.php';
