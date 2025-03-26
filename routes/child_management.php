@@ -17,14 +17,20 @@ $app->group('/child', function (RouteCollectorProxy $group) {
 
     // 1) List all children for the logged-in parent
     $group->get('/list', function (Request $request, Response $response, $args) {
-        // Retrieve children where parent_id = current user, and isDeleted=0
+        // Retrieve children for the current parent
         $children = DB::query("SELECT * FROM children WHERE parent_id=%i AND isDeleted=0", $_SESSION['user_id'] ?? 0);
 
-        // Render a Twig template that displays a list of the parent's children
+        // For each child, calculate their age and store it in the array
+        foreach ($children as &$child) {
+            $child['age'] = calculateAge($child['date_of_birth']);
+        }
+
+        // Render the Twig template
         return $this->get(Twig::class)->render($response, 'child_list.html.twig', [
             'children' => $children
         ]);
     });
+
 
     // 2) GET route to display a form to create a new child
     $group->get('/new', function (Request $request, Response $response, $args) {

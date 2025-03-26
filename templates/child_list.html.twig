@@ -1,14 +1,13 @@
 {% extends "master.html.twig" %}
 
 {% block addHead %}
+<!-- Load the custom stylesheet AFTER styles.css -->
 <link rel="stylesheet" href="/public/custom.css">
 {% endblock %}
 
 {% block content %}
 <div class="content-box">
     <h2>Your Children</h2>
-
-    <!-- "Add Child" button, using your existing .btn-primary or a new custom style -->
     <a href="/child/new" class="btn btn-primary mb-3">Add Child</a>
 
     {% if children is not empty %}
@@ -17,6 +16,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Date of Birth</th>
+                    <th>Age</th>  <!-- New Age column -->
                     <th>Photo</th>
                     <th>Actions</th>
                 </tr>
@@ -26,6 +26,7 @@
                 <tr>
                     <td>{{ child.name }}</td>
                     <td>{{ child.date_of_birth }}</td>
+                    <td>{{ child.age }}</td> <!-- Display the calculated age -->
                     <td>
                         {% if child.profile_photo_path %}
                             <img src="/uploads/{{ child.profile_photo_path }}" alt="Child Photo" width="80">
