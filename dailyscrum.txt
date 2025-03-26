@@ -198,10 +198,11 @@ cPanel SMTP set-up
 ==========================================================
 2025/03/25 Shao Hang
 1. Done since last scrum
-
+Fixed bugs with payment, fixed blackscreen appearing (modal covering), added parent dashboard, changed payment database
 2. Plan until next Scrum
-
+Finish implementing the payment with the parent dashboard. Add parent history in the parent dashboard.
 3. Need assistance / figure things out
+Importing everything from the database for the history and create the success payment page whenever it's a success it goes to that page with all the infos
 ------------------------------------------------------
 
  Qi He
