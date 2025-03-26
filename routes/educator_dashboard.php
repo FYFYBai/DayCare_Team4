@@ -21,5 +21,3 @@ $app->get('/educator-dashboard', function (Request $request, Response $response,
         'today'          => $today
     ]);
 })->add($checkRoleMiddleware('educator'));
-
-

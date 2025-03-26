@@ -200,3 +200,15 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             ->withStatus(302);
     });
 })->add($checkRoleMiddleware('parent')); // Only parents can access these routes
+
+$app->get('/child/{childId}', function (Request $request, Response $response, array $args) {
+    $childId = (int)$args['childId'];
+    $child = DB::queryFirstRow("SELECT * FROM children WHERE id = %i AND educator_id = %i AND isDeleted = 0",
+                                $childId, $_SESSION['user_id']);
+    if (!$child) {
+        throw new \Slim\Exception\HttpNotFoundException($request, "Child not found or access denied.");
+    }
+    return $this->get(Twig::class)->render($response, 'child_profile.html.twig', [
+        'child' => $child
+    ]);
+})->add($checkRoleMiddleware('educator'));
