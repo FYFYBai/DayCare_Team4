@@ -1,4 +1,6 @@
 <?php
+
+use Dom\ChildNode;
 // Initialize the application (session, container, logging, etc.)
 require_once __DIR__ . '/init.php';
 
@@ -29,3 +31,6 @@ require_once __DIR__ . '/routes/admin_educator_assignment.php';
 // Run the Slim application to process HTTP requests
 $app->run();
 
+
+
+// TODO: detect deleted child, make webcame triggered by a button and add the feature to edit child

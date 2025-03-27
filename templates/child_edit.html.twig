@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="content-box custom-form">
+<div class="content-box">
     <h2>Edit Child Data</h2>
     <form method="post" action="/child/{{ child.id }}/edit" enctype="multipart/form-data">
         <label for="name">Name:</label>
@@ -21,17 +21,96 @@
             <p>No photo yet.</p>
         {% endif %}
 
-        <label for="profile_photo">New Photo (optional):</label>
+        <label for="profile_photo">New Photo (Upload):</label>
         <input type="file" name="profile_photo" id="profile_photo" accept="image/*">
 
-        <button type="submit">Save Changes</button>
+        <hr>
+        <h3>Or use Webcam</h3>
+        <!-- Button to show webcam capture controls -->
+        <button type="button" id="show-webcam-btn" class="btn btn-primary">Activate Webcam</button>
+        <div style="height: 10px"></div>
+
+        <!-- Webcam section hidden by default -->
+        <div id="webcam-section" style="display:none; margin-top:10px;">
+            <video id="webcam" autoplay playsinline width="320" height="240"></video>
+            <br>
+            <button type="button" id="capture-btn" class="btn btn-primary">Capture Photo</button>
+            <button type="button" id="reset-btn" class="btn btn-secondary" style="display:none;">Reset Capture</button>
+            <canvas id="captured-canvas" width="320" height="240" style="display:none;"></canvas>
+            <input type="hidden" name="captured_image" id="captured_image">
+            <br>
+            <button type="button" id="close-webcam-btn" class="btn btn-secondary" style="margin-top:10px;">Close Webcam</button>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 
     <hr>
-
     <!-- Delete Child Form -->
     <form method="post" action="/child/{{ child.id }}/delete" onsubmit="return confirm('Are you sure you want to delete this child profile?');">
         <button type="submit" style="background-color: red; color: white;">Delete Child</button>
     </form>
 </div>
+
+<script>
+    // Activate webcam when user clicks the button
+    document.getElementById('show-webcam-btn').addEventListener('click', function(){
+        document.getElementById('webcam-section').style.display = 'block';
+        document.getElementById('show-webcam-btn').style.display = 'none';
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            const video = document.getElementById('webcam');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(err) {
+                    console.error("Error accessing webcam: ", err);
+                });
+        }
+    });
+
+    // Close webcam and reset controls
+    document.getElementById('close-webcam-btn').addEventListener('click', function(){
+        const video = document.getElementById('webcam');
+        let stream = video.srcObject;
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        video.srcObject = null;
+        document.getElementById('webcam-section').style.display = 'none';
+        document.getElementById('show-webcam-btn').style.display = 'inline-block';
+        document.getElementById('captured_image').value = '';
+        document.getElementById('captured-canvas').style.display = 'none';
+        document.getElementById('capture-btn').style.display = 'inline-block';
+        document.getElementById('reset-btn').style.display = 'none';
+    });
+
+    // Capture photo from webcam
+    document.getElementById('capture-btn').addEventListener('click', function(){
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('captured-canvas');
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+        video.style.display = 'none';
+        document.getElementById('captured_image').value = canvas.toDataURL('image/png');
+        document.getElementById('capture-btn').style.display = 'none';
+        document.getElementById('reset-btn').style.display = 'inline-block';
+    });
+
+    // Reset capture and allow recapturing
+    document.getElementById('reset-btn').addEventListener('click', function(){
+        const canvas = document.getElementById('captured-canvas');
+        const video = document.getElementById('webcam');
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'none';
+        video.style.display = 'block';
+        document.getElementById('captured_image').value = '';
+        document.getElementById('capture-btn').style.display = 'inline-block';
+        document.getElementById('reset-btn').style.display = 'none';
+    });
+</script>
 {% endblock %}

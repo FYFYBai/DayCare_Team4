@@ -21,12 +21,12 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
 
         if ($searchChild !== '') {
             $mode = 'childSearch';
-            // Query children by name (partial match); also treat educator_id=0 as unassigned
+            // Query children by name (partial match) and ensure child is not soft-deleted
             $childSearchResults = DB::query("
                 SELECT c.*, u.name AS educator_name, u.id AS current_educator_id
                 FROM children c
                 LEFT JOIN users u ON c.educator_id = u.id
-                WHERE c.name LIKE %s
+                WHERE c.name LIKE %s AND c.isDeleted = 0
                 ORDER BY c.name ASC
             ", '%' . $searchChild . '%');
         } elseif ($searchEducator !== '') {
@@ -42,7 +42,7 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
                 $children = DB::query("
                     SELECT id, name, date_of_birth, educator_id
                     FROM children
-                    WHERE educator_id = %i
+                    WHERE educator_id = %i AND isDeleted = 0
                     ORDER BY name ASC
                 ", $ed['id']);
                 $educatorData[] = ['educator' => $ed, 'children' => $children];
@@ -59,7 +59,7 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
                 $children = DB::query("
                     SELECT id, name, date_of_birth, educator_id
                     FROM children
-                    WHERE educator_id = %i
+                    WHERE educator_id = %i AND isDeleted = 0
                     ORDER BY name ASC
                 ", $ed['id']);
                 $educatorData[] = ['educator' => $ed, 'children' => $children];
@@ -67,7 +67,7 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
             $unassignedChildren = DB::query("
                 SELECT id, name, date_of_birth
                 FROM children
-                WHERE (educator_id IS NULL OR educator_id = 0)
+                WHERE (educator_id IS NULL OR educator_id = 0) AND isDeleted = 0
                 ORDER BY name ASC
             ");
         }
@@ -88,8 +88,8 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
         $childId = (int) ($data['child_id'] ?? 0);
         // If educator_id is blank, set to null (i.e. unassigned)
         $educatorId = (isset($data['educator_id']) && $data['educator_id'] !== '')
-                        ? (int) $data['educator_id']
-                        : null;
+            ? (int) $data['educator_id']
+            : null;
         if ($childId > 0) {
             DB::update('children', ['educator_id' => $educatorId], "id=%i", $childId);
         }
@@ -100,5 +100,4 @@ $app->group('/admin', function (RouteCollectorProxy $group) {
         ]);
         return $response->withHeader('Location', '/admin/educator-child-list?' . $qs)->withStatus(302);
     });
-
 })->add($checkRoleMiddleware('admin'));
