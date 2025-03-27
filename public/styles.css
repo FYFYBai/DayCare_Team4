@@ -99,7 +99,7 @@ a:hover {
 }
 
 .card-img-top.child-photo {
-    height: 150px;              /* restrict the height */
+    height: 200px;              /* restrict the height */
     object-fit: cover;          /* crop image to fill space */
     object-position: center top;
     width: 100%;                /* ensure it fills the card width */
