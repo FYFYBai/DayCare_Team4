@@ -3,18 +3,104 @@
 
 {% block addHead %}
     <link rel="stylesheet" href="/public/custom.css">
+    <!-- Include Chart.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="content-box">
     <h2>Admin Dashboard</h2>
-    <p>Welcome, Admin! Choose an action below:</p>
+    <p>Welcome, {{ userName }}!</p>
 
-    <ul>
-        <li><a href="/admin/users">Manage Users</a></li>
-        <li><a href="#">Manage Events</a></li>
-        <li><a href="#">Reports and Analytics</a></li>
-        {# Add more admin-related links as needed #}
-    </ul>
+    <h3>
+        By far, <u>{{ totalChildren }}</u> children and <u>{{ totalEducators }}</u> educators 
+        have joined our community!
+    </h3>
+
+    <a href="/admin/users" class="btn btn-primary" style="margin-bottom: 20px;">
+        Manage Users
+    </a>
+
+    <a href="/admin/educator-child-list" class="btn btn-primary" style="margin-bottom: 20px; margin-left: 10px;">
+        Assign Educators
+    </a>
+
+    <hr>
+
+    <!-- Bar Chart: Cumulative User Growth -->
+    <h3>Cumulative User Growth (Last 7 Days)</h3>
+    <canvas id="userGrowthChart"></canvas>
+
+    <hr>
+
+    <!-- Attendance Trend (Line Chart) -->
+    <h3>Attendance Trend (Last 6 Months)</h3>
+    <canvas id="attendanceChart"></canvas>
 </div>
+
+<script>
+    // Bar Chart for Cumulative User Growth
+    const cumulativeDates  = {{ cumulativeDates|json_encode|raw }};
+    const cumulativeCounts = {{ cumulativeCounts|json_encode|raw }};
+
+    const ctxUser = document.getElementById('userGrowthChart').getContext('2d');
+    new Chart(ctxUser, {
+        type: 'bar',
+        data: {
+            labels: cumulativeDates,
+            datasets: [{
+                label: 'Cumulative Users',
+                data: cumulativeCounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Attendance Trend (Line Chart) from /api/attendance-data
+    fetch('/api/attendance-data')
+        .then(response => response.json())
+        .then(data => {
+            // data: [{registration_date, present, absent}, ...]
+            const labels = data.map(row => row.registration_date);
+            const presentData = data.map(row => parseInt(row.present));
+            const absentData  = data.map(row => parseInt(row.absent));
+
+            const ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctxAttendance, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Present',
+                            data: presentData,
+                            borderColor: 'green',
+                            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                            fill: false
+                        },
+                        {
+                            label: 'Absent',
+                            data: absentData,
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        })
+        .catch(err => console.error('Error fetching attendance data:', err));
+</script>
 {% endblock %}
