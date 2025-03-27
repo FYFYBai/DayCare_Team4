@@ -219,6 +219,14 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             return $response->withStatus(404);
         }
 
+        // Delete the corresponding picture file if it exists
+        if (!empty($child['profile_photo_path'])) {
+            $filePath = __DIR__ . '/../uploads/' . $child['profile_photo_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
         // Soft-delete the child
         DB::update('children', ['isDeleted' => 1], "id=%i", $childId);
 
