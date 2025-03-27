@@ -271,10 +271,16 @@ cont. educatore-dashboard (implement attendance tracking feature)
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
+started with ClouFlare - waiting for Greg to propogate the nameservers to CloudFlare
+Educator dashboard, attendance tracking, charts
 
 2. Plan until next Scrum
-
-
+Powerpoint presentation
+improve the educator dashboard
+revise the code 
+finsih with CloudFlare set up, fngers crossed :)
+(Do not tempt to add any new feature now.)
+EXHAUSTED!
 3. Need assistance / figure things out
 
 ==========================================================
