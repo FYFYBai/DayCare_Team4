@@ -1,0 +1,215 @@
+{# templates/admin_educator_child_list.html.twig #}
+{% extends "master.html.twig" %}
+
+{% block addHead %}
+  <link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <h2>Educator & Child Assignment</h2>
+    
+    <!-- Child Search Form -->
+    <form method="get" action="/admin/educator-child-list" style="margin-bottom: 20px;">
+        <label for="searchChild">Search by Child Name:</label>
+        <input type="text" id="searchChild" name="searchChild" value="{{ searchChild }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="/admin/educator-child-list" class="btn btn-secondary">Clear</a>
+    </form>
+    
+    <!-- Educator Search Form -->
+    <form method="get" action="/admin/educator-child-list" style="margin-bottom: 20px;">
+        <label for="searchEducator">Search by Educator Name:</label>
+        <input type="text" id="searchEducator" name="searchEducator" value="{{ searchEducator }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="/admin/educator-child-list" class="btn btn-secondary">Clear</a>
+    </form>
+    
+    {% if mode == 'childSearch' %}
+        <h3>Search Results for Children matching "{{ searchChild }}"</h3>
+        {% if childSearchResults is empty %}
+            <p>No children found.</p>
+        {% else %}
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Child ID</th>
+                        <th>Child Name</th>
+                        <th>Date of Birth</th>
+                        <th>Current Educator</th>
+                        <th>Reassign Educator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for child in childSearchResults %}
+                    <tr>
+                        <td>{{ child.id }}</td>
+                        <td>{{ child.name }}</td>
+                        <td>{{ child.date_of_birth|default('N/A') }}</td>
+                        <td>
+                            {% if child.educator_name %}
+                                {{ child.educator_name }}
+                            {% else %}
+                                <em>None</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="/admin/educator-child-list/update">
+                                <input type="hidden" name="child_id" value="{{ child.id }}">
+                                <input type="hidden" name="searchChild" value="{{ searchChild }}">
+                                <input type="hidden" name="searchEducator" value="{{ searchEducator }}">
+                                <select name="educator_id">
+                                    <option value="">-- Select Educator --</option>
+                                    {% for ed in allEducators %}
+                                        <option value="{{ ed.id }}"
+                                            {% if child.current_educator_id == ed.id %}selected{% endif %}>
+                                            {{ ed.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    
+    {% elseif mode == 'educatorSearch' %}
+        <h3>Search Results for Educators matching "{{ searchEducator }}"</h3>
+        {% if educatorData is empty %}
+            <p>No educator found.</p>
+        {% else %}
+            {% for block in educatorData %}
+                <h4>{{ block.educator.name }}</h4>
+                {% if block.children is empty %}
+                    <p>No children assigned to this educator.</p>
+                {% else %}
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Child ID</th>
+                                <th>Child Name</th>
+                                <th>Date of Birth</th>
+                                <th>Reassign Educator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for child in block.children %}
+                            <tr>
+                                <td>{{ child.id }}</td>
+                                <td>{{ child.name }}</td>
+                                <td>{{ child.date_of_birth|default('N/A') }}</td>
+                                <td>
+                                    <form method="post" action="/admin/educator-child-list/update">
+                                        <input type="hidden" name="child_id" value="{{ child.id }}">
+                                        <input type="hidden" name="searchChild" value="{{ searchChild }}">
+                                        <input type="hidden" name="searchEducator" value="{{ searchEducator }}">
+                                        <select name="educator_id">
+                                            <option value="">-- Select Educator --</option>
+                                            {% for ed in allEducators %}
+                                                <option value="{{ ed.id }}"
+                                                    {% if child.educator_id == ed.id %}selected{% endif %}>
+                                                    {{ ed.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                <hr>
+            {% endfor %}
+        {% endif %}
+    
+    {% else %}
+        {# Default view: no search; show unassigned children and then each educator's table #}
+        <h3>Unassigned Children</h3>
+        {% if unassignedChildren is empty %}
+            <p>No unassigned children.</p>
+        {% else %}
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Child ID</th>
+                        <th>Child Name</th>
+                        <th>Date of Birth</th>
+                        <th>Reassign Educator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for child in unassignedChildren %}
+                    <tr>
+                        <td>{{ child.id }}</td>
+                        <td>{{ child.name }}</td>
+                        <td>{{ child.date_of_birth|default('N/A') }}</td>
+                        <td>
+                            <form method="post" action="/admin/educator-child-list/update">
+                                <input type="hidden" name="child_id" value="{{ child.id }}">
+                                <select name="educator_id">
+                                    <option value="">-- Select Educator --</option>
+                                    {% for ed in allEducators %}
+                                        <option value="{{ ed.id }}">{{ ed.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <hr>
+
+        {% for block in educatorData %}
+            <h3>{{ block.educator.name }}</h3>
+            {% if block.children is empty %}
+                <p>No children assigned to this educator.</p>
+            {% else %}
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Child ID</th>
+                            <th>Child Name</th>
+                            <th>Date of Birth</th>
+                            <th>Reassign Educator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for child in block.children %}
+                        <tr>
+                            <td>{{ child.id }}</td>
+                            <td>{{ child.name }}</td>
+                            <td>{{ child.date_of_birth|default('N/A') }}</td>
+                            <td>
+                                <form method="post" action="/admin/educator-child-list/update">
+                                    <input type="hidden" name="child_id" value="{{ child.id }}">
+                                    <select name="educator_id">
+                                        <option value="">-- Select Educator --</option>
+                                        {% for ed in allEducators %}
+                                            <option value="{{ ed.id }}"
+                                                {% if child.educator_id == ed.id %}selected{% endif %}>
+                                                {{ ed.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <hr>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

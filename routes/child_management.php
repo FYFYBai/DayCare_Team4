@@ -31,7 +31,6 @@ $app->group('/child', function (RouteCollectorProxy $group) {
         ]);
     });
 
-
     // 2) GET route to display a form to create a new child
     $group->get('/new', function (Request $request, Response $response, $args) {
         // Render a Twig template with a form to add a new child
@@ -54,11 +53,11 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             return $response->withStatus(400);
         }
 
-        // Handle optional profile photo upload
+        $photoPath = ''; // default to empty or 'default.png' if desired
+
+        // Handle file upload from input field "profile_photo"
         $uploadedFiles = $request->getUploadedFiles();
         $profilePhoto  = $uploadedFiles['profile_photo'] ?? null;
-        $photoPath     = ''; // default to empty or 'default.png' if you want
-
         if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
@@ -69,11 +68,26 @@ $app->group('/child', function (RouteCollectorProxy $group) {
                 $response->getBody()->write("File size exceeds 2MB limit.");
                 return $response->withStatus(400);
             }
-            // Generate a unique filename
+            // Generate a unique filename using UUID (temporary, will be overridden if captured image is provided)
             $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
             $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
-
             $photoPath = $filename;
+        }
+
+        // Handle captured image (webcam capture)
+        $capturedImage = trim($data['captured_image'] ?? '');
+        if (!empty($capturedImage)) {
+            // Expect a data URL like: "data:image/png;base64,...."
+            $parts = explode(',', $capturedImage);
+            if (count($parts) == 2) {
+                $imageData = base64_decode($parts[1]);
+                // Sanitize the child's name: lowercase and replace spaces with underscores
+                $sanitizedChildName = strtolower(str_replace(' ', '_', $name));
+                // Append a timestamp to ensure uniqueness
+                $filename = $sanitizedChildName . '-' . time() . '.png';
+                file_put_contents(__DIR__ . '/../uploads/' . $filename, $imageData);
+                $photoPath = $filename;
+            }
         }
 
         // Insert new child record
@@ -141,11 +155,11 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             return $response->withStatus(400);
         }
 
-        // Handle optional new profile photo upload
+        $photoPath = $child['profile_photo_path']; // Default: keep existing
+
+        // Handle file upload from input field "profile_photo"
         $uploadedFiles = $request->getUploadedFiles();
         $profilePhoto  = $uploadedFiles['profile_photo'] ?? null;
-        $photoPath     = $child['profile_photo_path']; // Keep existing if no new upload
-
         if ($profilePhoto && $profilePhoto->getError() === UPLOAD_ERR_OK) {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (!in_array($profilePhoto->getClientMediaType(), $allowedTypes)) {
@@ -156,11 +170,25 @@ $app->group('/child', function (RouteCollectorProxy $group) {
                 $response->getBody()->write("File size exceeds 2MB limit.");
                 return $response->withStatus(400);
             }
-            // Generate a unique filename
+            // Generate a unique filename using UUID
             $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
             $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
+            $photoPath = $filename;
+        }
 
-            $photoPath = $filename; // Update new photo path
+        // Handle captured image (webcam capture)
+        $capturedImage = trim($data['captured_image'] ?? '');
+        if (!empty($capturedImage)) {
+            // Expect a data URL like "data:image/png;base64,..."
+            $parts = explode(',', $capturedImage);
+            if (count($parts) == 2) {
+                $imageData = base64_decode($parts[1]);
+                // Sanitize child's name: lowercase and replace spaces with underscores
+                $sanitizedChildName = strtolower(str_replace(' ', '_', $name));
+                $filename = $sanitizedChildName . '-' . time() . '.png';
+                file_put_contents(__DIR__ . '/../uploads/' . $filename, $imageData);
+                $photoPath = $filename;
+            }
         }
 
         // Update record
@@ -191,6 +219,14 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             return $response->withStatus(404);
         }
 
+        // Delete the corresponding picture file if it exists
+        if (!empty($child['profile_photo_path'])) {
+            $filePath = __DIR__ . '/../uploads/' . $child['profile_photo_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
         // Soft-delete the child
         DB::update('children', ['isDeleted' => 1], "id=%i", $childId);
 
@@ -201,10 +237,14 @@ $app->group('/child', function (RouteCollectorProxy $group) {
     });
 })->add($checkRoleMiddleware('parent')); // Only parents can access these routes
 
+// Additional route for child profile accessible by educators
 $app->get('/child/{childId}', function (Request $request, Response $response, array $args) {
     $childId = (int)$args['childId'];
-    $child = DB::queryFirstRow("SELECT * FROM children WHERE id = %i AND educator_id = %i AND isDeleted = 0",
-                                $childId, $_SESSION['user_id']);
+    $child = DB::queryFirstRow(
+        "SELECT * FROM children WHERE id = %i AND educator_id = %i AND isDeleted = 0",
+        $childId,
+        $_SESSION['user_id']
+    );
     if (!$child) {
         throw new \Slim\Exception\HttpNotFoundException($request, "Child not found or access denied.");
     }
