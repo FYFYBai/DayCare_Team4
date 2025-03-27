@@ -263,11 +263,11 @@ cont. educatore-dashboard (implement attendance tracking feature)
 
  Qi He
 1. Done since last scrum
-
+Finished admin, child, webcam and bug fixes, created charts and many functionalities
 2. Plan until next Scrum
-   
+Prepare for presentation, final refinement
 3. Need assistance / figure things out
-
+speech design
  ---------------------------------------------------------
  Ritu Arora
 1. Done since last scrum
