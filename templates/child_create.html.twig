@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="content-box custom-form">
+<div class="content-box">
     <h2>Add a New Child</h2>
     <form method="post" action="/child/new" enctype="multipart/form-data">
         <label for="name">Child's Name:</label>
@@ -14,10 +14,71 @@
         <label for="date_of_birth">Date of Birth:</label>
         <input type="date" name="date_of_birth" id="date_of_birth" required>
 
-        <label for="profile_photo">Child's Photo (optional):</label>
+        <label for="profile_photo">Child's Photo (Upload):</label>
         <input type="file" name="profile_photo" id="profile_photo" accept="image/*">
 
-        <button type="submit">Create Child</button>
+        <hr>
+        <h3>Or capture using your webcam</h3>
+        <div id="webcam-container">
+            <video id="webcam" autoplay playsinline width="320" height="240"></video>
+            <br>
+            <button type="button" id="capture-btn" class="btn btn-primary">Capture Photo</button>
+            <button type="button" id="reset-btn" class="btn btn-secondary" style="display:none;">Reset Capture</button>
+            <canvas id="captured-canvas" width="320" height="240" style="display:none;"></canvas>
+            <input type="hidden" name="captured_image" id="captured_image">
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary">Create Child</button>
     </form>
 </div>
+
+<script>
+    // Check if the browser supports getUserMedia
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('captured-canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const capturedInput = document.getElementById('captured_image');
+
+        // Access the webcam stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.error("Error accessing webcam: ", err);
+            });
+
+        captureBtn.addEventListener('click', function() {
+            // Draw current video frame to the canvas
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Display the captured image and hide video
+            canvas.style.display = 'block';
+            video.style.display = 'none';
+            // Store the base64 image data in the hidden input
+            capturedInput.value = canvas.toDataURL('image/png');
+            // Toggle buttons
+            captureBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+        });
+
+        resetBtn.addEventListener('click', function() {
+            // Clear the canvas and hidden input, show video again
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'none';
+            video.style.display = 'block';
+            capturedInput.value = '';
+            // Toggle buttons back
+            captureBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+        });
+    } else {
+        document.getElementById('webcam-container').innerHTML = "<p>Webcam not supported in your browser.</p>";
+    }
+</script>
 {% endblock %}
