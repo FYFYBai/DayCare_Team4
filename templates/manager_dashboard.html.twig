@@ -1,0 +1,41 @@
+{# templates/manager_dashboard.html.twig #}
+{% extends "master.html.twig" %}
+
+{% block addHead %}
+    <link rel="stylesheet" href="/public/custom.css">
+{% endblock %}
+
+{% block content %}
+<div class="content-box">
+    <h2>Manager Dashboard</h2>
+    <p>Welcome, Manager! Here’s an overview of key daycare metrics:</p>
+
+    <div class="dashboard-stats-container">
+
+        {# Card or box for total children #}
+        <div class="stat-box">
+            <h3>Total Children</h3>
+            <p>{{ totalChildren }}</p>
+        </div>
+
+        {# Card or box for total educators #}
+        <div class="stat-box">
+            <h3>Total Educators</h3>
+            <p>{{ totalEducators }}</p>
+        </div>
+
+        {# Card or box for event participation #}
+        <div class="stat-box">
+            <h3>Event Participation</h3>
+            <p>{{ eventParticipation }}</p>
+        </div>
+
+        {# Placeholder for attendance data #}
+        <div class="stat-box">
+            <h3>Attendance</h3>
+            <p>Coming soon...</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -63,13 +63,16 @@ $app->post('/login', function (Request $request, Response $response, $args) {
     // Role-based redirect
     switch ($user['role']) {
         case 'manager':
-            $redirectUrl = '/dashboard';
+            $redirectUrl = '/manager/dashboard';
             break;
         case 'educator':
             $redirectUrl = '/educator-dashboard';
             break;
         case 'parent':
             $redirectUrl = '/parent-dashboard';
+            break;
+        case 'admin':
+            $redirectUrl = '/admin-dashboard';
             break;
         default:
             $redirectUrl = '/dashboard';
