@@ -6,8 +6,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
 
-$app->group('/admin', function (RouteCollectorProxy $group) {
-    $group->get('/dashboard', function (Request $request, Response $response, array $args) {
+$app->group('/admin-dashboard', function (RouteCollectorProxy $group) {
+    $group->get('', function (Request $request, Response $response, array $args) {
         // Get the logged-in admin’s user record
         $userId = $_SESSION['user_id'] ?? null;
         $user = ['name' => 'Admin']; // fallback
