@@ -1,168 +1,163 @@
 {% extends "master.html.twig" %}
 
-{% block title %}Educator Dashboard - DayCare System
-{% endblock %}
+{% block title %}Educator Dashboard - DayCare System{% endblock %}
 
 {% block content %}
-	<div
-		class="container mt-5">
-		<!-- Flash messages at the top -->
-		{% if messages.success %}
-			<div class="alert alert-success">{{ messages.success[0]|raw }}</div>
-		{% endif %}
-		{% if messages.error %}
-			<div class="alert alert-danger">{{ messages.error[0]|raw }}</div>
-		{% endif %}
+<div class="container mt-5">
+    <!-- Flash messages -->
+    {% if messages.success %}
+      <div class="alert alert-success">{{ messages.success[0]|raw }}</div>
+    {% endif %}
+    {% if messages.error %}
+      <div class="alert alert-danger">{{ messages.error[0]|raw }}</div>
+    {% endif %}
 
-		<div
-			class="row">
-			<!-- Left Sidebar -->
-			<div class="col-md-3">
-				<div class="list-group mb-4">
-					<a href="/educator/profile" class="list-group-item list-group-item-action">View/Update Profile</a>
-					<a href="/educator/attendance" class="list-group-item list-group-item-action">Mark Today's Attendance</a>
-					<a href="/child/list" class="list-group-item list-group-item-action">Child Profiles</a>
-					<!-- You can add more sidebar links here -->
-				</div>
-			</div>
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="/educator/profile" class="list-group-item list-group-item-action">View/Update Profile</a>
+                <a href="/educator/attendance" class="list-group-item list-group-item-action">Mark Today's Attendance</a>
+                <a href="/child/list" class="list-group-item list-group-item-action">Child Profiles</a>
+                <!-- Add more links as needed -->
+            </div>
+        </div>
 
-			<!-- Main Content Area -->
-			<div class="col-md-9">
-				<h1>Educator Dashboard</h1>
-				<p>Welcome,
-					{{ user.name }}!</p>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <h1>Educator Dashboard</h1>
+            <p>Welcome, {{ user.name }}!</p>
+            
+            <h2>Your Classes / Child Profiles</h2>
+            <ul class="list-group mb-4">
+                {% for child in children %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="/child/{{ child.id }}" style="text-decoration:none; color:inherit;">{{ child.name }}</a>
+                        {% set registration = null %}
+                        {% for reg in registrations %}
+                            {% if reg.child_id == child.id %}
+                                {% set registration = reg %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if registration %}
+                            <span class="badge bg-success">Marked: {{ registration.status|capitalize }}</span>
+                        {% else %}
+                            <span class="badge bg-warning">Not marked today</span>
+                        {% endif %}
+                    </li>
+                {% else %}
+                    <li class="list-group-item">No child profiles assigned.</li>
+                {% endfor %}
+            </ul>
+            
+            <!-- Filtering Controls for Child Attendance Chart -->
+            <div class="mb-3">
+                <label for="childSelect" class="form-label">Select Child:</label>
+                <select id="childSelect" class="form-select">
+                    {% for child in children %}
+                        <option value="{{ child.id }}">{{ child.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date:</label>
+                <input type="date" id="startDate" class="form-control" value="{{ today|date_modify('-1 month')|date('Y-m-d') }}">
+            </div>
+            <div class="mb-3">
+                <label for="endDate" class="form-label">End Date:</label>
+                <input type="date" id="endDate" class="form-control" value="{{ today }}">
+            </div>
+            <button id="filterChart" class="btn btn-primary mb-3">Update Chart</button>
 
-				<h2>Your Classes / Child Profiles</h2>
-				<ul class="list-group mb-4">
-					{% for child in children %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<a href="/child/{{ child.id }}" style="text-decoration:none; color:inherit;">{{ child.name }}</a>
-							{% set registration = null %}
-							{% for reg in registrations %}
-								{% if reg.child_id == child.id %}
-									{% set registration = reg %}
-								{% endif %}
-							{% endfor %}
-							{% if registration %}
-								<span class="badge bg-success">Marked:
-									{{ registration.status|capitalize }}</span>
-							{% else %}
-								<span class="badge bg-warning">Not marked today</span>
-							{% endif %}
-						</li>
-					{% else %}
-						<li class="list-group-item">No child profiles assigned.</li>
-					{% endfor %}
-				</ul>
-
-				<div class="mb-3">
-					<label for="childSelect">Select Child:</label>
-					<select id="childSelect" class="form-select">
-						{% for child in children %}
-							<option value="{{ child.id }}">{{ child.name }}</option>
-						{% endfor %}
-					</select>
-				</div>
-				<div class="mb-3">
-					<label for="startDate">Start Date:</label>
-					<input type="date" id="startDate" class="form-control" value="{{ today|date_modify('-1 month')|date('Y-m-d') }}">
-				</div>
-				<div class="mb-3">
-					<label for="endDate">End Date:</label>
-					<input type="date" id="endDate" class="form-control" value="{{ today }}">
-				</div>
-				<button id="filterChart" class="btn btn-primary mb-3">Update Chart</button>
-
-				<!-- Attendance Chart Section -->
-				<div class="mb-4">
-					<h2>Attendance Trend (Last 6 Months)</h2>
-					<canvas id="childAttendanceChart" width="400" height="200"></canvas>
-				</div>
-
-				<div class="mt-4">
-					<a href="/logout" class="btn btn-danger">Logout</a>
-				</div>
-			</div>
-		</div>
-	</div>
+            <!-- Child Attendance Chart Section -->
+            <div class="mb-4">
+                <h2>Child Attendance Trend</h2>
+                <canvas id="childAttendanceChart"></canvas>
+            </div>
+            
+            <div class="mt-4">
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block addJS %}
-	<!-- Include Chart.js from CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-let chart;
+<!-- Include Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    let chart;
 
-// Function to load child-specific attendance data and render the chart
-function loadChart(childId, startDate, endDate) {
-const url = `/api/child-attendance?child_id=${childId}&start_date=${startDate}&end_date=${endDate}`;
-fetch(url).then(response => response.json()).then(data => {
-const labels = data.map(item => item.registration_date);
-const presentData = data.map(item => parseInt(item.present));
-const absentData = data.map(item => parseInt(item.absent));
+    function loadChart(childId, startDate, endDate) {
+        const url = `/api/child-attendance?child_id=${childId}&start_date=${startDate}&end_date=${endDate}`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              const labels = data.map(item => item.registration_date);
+              const presentData = data.map(item => parseInt(item.present));
+              const absentData = data.map(item => parseInt(item.absent));
 
-const ctx = document.getElementById('childAttendanceChart').getContext('2d');
-if (chart) {
-chart.destroy();
-}
-chart = new Chart(ctx, {
-type: 'line',
-data: {
-labels: labels,
-datasets: [
-{
-label: 'Present',
-data: presentData,
-borderColor: 'green',
-backgroundColor: 'rgba(0, 128, 0, 0.2)',
-fill: true
-}, {
-label: 'Absent',
-data: absentData,
-borderColor: 'red',
-backgroundColor: 'rgba(255, 0, 0, 0.2)',
-fill: true
-}
-]
-},
-options: {
-responsive: true,
-scales: {
-x: {
-title: {
-display: true,
-text: 'Date'
-}
-},
-y: {
-title: {
-display: true,
-text: 'Count'
-},
-beginAtZero: true
-}
-}
-}
+              const ctx = document.getElementById('childAttendanceChart').getContext('2d');
+              if(chart) {
+                  chart.destroy();
+              }
+              chart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: labels,
+                      datasets: [
+                          {
+                              label: 'Present',
+                              data: presentData,
+                              borderColor: 'green',
+                              backgroundColor: 'rgba(0, 128, 0, 0.2)',
+                              fill: true
+                          },
+                          {
+                              label: 'Absent',
+                              data: absentData,
+                              borderColor: 'red',
+                              backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                              fill: true
+                          }
+                      ]
+                  },
+                  options: {
+                      responsive: true,
+                      scales: {
+                          x: {
+                              title: {
+                                  display: true,
+                                  text: 'Date'
+                              }
+                          },
+                          y: {
+                              title: {
+                                  display: true,
+                                  text: 'Count'
+                              },
+                              beginAtZero: true
+                          }
+                      }
+                  }
+              });
+          })
+          .catch(error => console.error("Error fetching child attendance data:", error));
+    }
+
+    const childSelect = document.getElementById('childSelect');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+
+    // Load chart initially for the first child
+    loadChart(childSelect.value, startDateInput.value, endDateInput.value);
+
+    // Update chart when filter button is clicked
+    document.getElementById('filterChart').addEventListener('click', function(){
+        loadChart(childSelect.value, startDateInput.value, endDateInput.value);
+    });
 });
-}).catch(error => console.error("Error fetching child attendance data:", error));
-}
-
-// Example: Get initial filter values (you should have corresponding controls in your template)
-const childSelect = document.getElementById('childSelect');
-const startDateInput = document.getElementById('startDate');
-const endDateInput = document.getElementById('endDate');
-
-// Load chart with initial values
-loadChart(childSelect.value, startDateInput.value, endDateInput.value);
-
-// Update chart when the filter button is clicked
-document.getElementById('filterChart').addEventListener('click', function () {
-const childId = childSelect.value;
-const startDate = startDateInput.value;
-const endDate = endDateInput.value;
-loadChart(childId, startDate, endDate);
-});
-});
-	</script>
+</script>
 {% endblock %}
