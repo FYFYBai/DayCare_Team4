@@ -11,20 +11,22 @@ $app->group('/educator/attendance', function (RouteCollectorProxy $group) use ($
     // GET: Display the attendance form for today
     $group->get('', function (Request $request, Response $response, array $args) use ($container) {
         $educatorId = $_SESSION['user_id'];
+
         $children = DB::query("SELECT * FROM children WHERE educator_id = %i AND isDeleted = 0", $educatorId);
         $today = date('Y-m-d');
         // Fetch existing registrations for today for these children
         $registrations = DB::query("SELECT * FROM registrations 
                                      WHERE registration_date = %s AND child_id IN 
                                        (SELECT id FROM children WHERE educator_id = %i)", $today, $educatorId);
+       
         return $container->get(Twig::class)->render($response, 'educator_attendance_form.html.twig', [
             'children' => $children,
-            'today'    => $today,
+            'today' => $today,
             'registrations' => $registrations
         ]);
     });
-    
-    
+
+
     // POST: Process the attendance submission for today
     $group->post('', function (Request $request, Response $response, array $args) use ($container) {
         $data = $request->getParsedBody();
@@ -44,12 +46,23 @@ $app->group('/educator/attendance', function (RouteCollectorProxy $group) use ($
                 $flash->addMessage('error', "Invalid status for child ID {$childId}.");
                 return $response->withHeader('Location', '/educator/attendance')->withStatus(302);
             }
-            // Insert into registrations table without educator_id, since the column doesn't exist
-            DB::insert('registrations', [
-                'child_id'          => $childId,
-                'registration_date' => $registration_date,
-                'status'            => $status
-            ]);
+
+            // Check if an attendance record already exists for this child and date
+            $existing = DB::queryFirstRow("SELECT * FROM registrations WHERE child_id = %i AND registration_date = %s", $childId, $registration_date);
+
+            if ($existing) {
+                // Update the existing record
+                DB::update('registrations', [
+                    'status' => $status
+                ], "child_id = %i AND registration_date = %s", $childId, $registration_date);
+            } else {
+                // Insert a new record
+                DB::insert('registrations', [
+                    'child_id' => $childId,
+                    'registration_date' => $registration_date,
+                    'status' => $status
+                ]);
+            }
         }
 
         $flash = $container->get(\Slim\Flash\Messages::class);
