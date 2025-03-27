@@ -72,7 +72,7 @@ $app->post('/login', function (Request $request, Response $response, $args) {
             $redirectUrl = '/parent-dashboard';
             break;
         case 'admin':
-            $redirectUrl = '/admin/dashboard';
+            $redirectUrl = '/admin-dashboard';
             break;
         default:
             $redirectUrl = '/dashboard';
