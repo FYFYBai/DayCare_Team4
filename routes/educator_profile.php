@@ -4,12 +4,22 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 
 // GET route: Display educator profile
+// GET route: Display educator profile
 $app->get('/educator/profile', function (Request $request, Response $response, $args) {
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE id = %d", $_SESSION['user_id']);
+    $educatorId = $_SESSION['user_id'];
+
+    // Fetch educator details
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE id = %d", $educatorId);
+
+    // Count children assigned to this educator
+    $childCount = DB::queryFirstField("SELECT COUNT(*) FROM children WHERE educator_id = %d", $educatorId);
+
     return $this->get(Twig::class)->render($response, 'educator_profile.html.twig', [
-        'user' => $user
+        'user' => $user,
+        'childCount' => $childCount
     ]);
 })->add($checkRoleMiddleware('educator'));
+
 
 // POST route: Update educator profile
 $app->post('/educator/profile', function (Request $request, Response $response, $args) {
