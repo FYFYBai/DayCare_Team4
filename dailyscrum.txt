@@ -227,10 +227,12 @@ fix image upload from remote host instead of static file upload (if not done ton
 ==========================================================
 2025/03/26 Shao Hang
 1. Done since last scrum
-
+Fix bugs with the parents dashboard and added payment history in the parents dashboard
 2. Plan until next Scrum
+fix image upload from remote host instead of static file upload and add the events 
 
 3. Need assistance / figure things out
+integrate a calendar in the parents and educator should be able to manage the events so the parents are able to see it
 ------------------------------------------------------
 
  Qi He
