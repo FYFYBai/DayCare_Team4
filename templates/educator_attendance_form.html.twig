@@ -1,49 +1,60 @@
 {% extends "master.html.twig" %}
 
-{% block title %}Mark Attendance - Educator Dashboard{% endblock %}
+{% block title %}Mark Attendance - Educator Dashboard
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1>Mark Attendance for Today</h1>
-    <p>Today's Date: {{ today }}</p>
+	<div class="container mt-5">
+		<h1>Mark Attendance for Today</h1>
+		<p>Today's Date:
+			{{ today }}</p>
 
-    {# Display flash messages if any #}
-    {% if messages.success %}
-      <div class="alert alert-success">{{ messages.success[0]|raw }}</div>
-    {% endif %}
-    {% if messages.error %}
-      <div class="alert alert-danger">{{ messages.error[0]|raw }}</div>
-    {% endif %}
+		{# Display flash messages if any #}
+		{% if messages.success %}
+			<div class="alert alert-success">{{ messages.success[0]|raw }}</div>
+		{% endif %}
+		{% if messages.error %}
+			<div class="alert alert-danger">{{ messages.error[0]|raw }}</div>
+		{% endif %}
 
-    <form method="post" action="/educator/attendance">
-        <input type="hidden" name="date" value="{{ today }}">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Child Name</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for child in children %}
-                <tr>
-                    <td>{{ child.name }}</td>
-                      <td>
-                        <input type="radio" name="attendance[{{ child.id }}]" value="present" {% if reg and reg.status == 'present' %}checked{% endif %} required>
-                    </td>
-                    <td>
-                        <input type="radio" name="attendance[{{ child.id }}]" value="absent" {% if reg and reg.status == 'absent' %}checked{% endif %} required>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="3">No children assigned.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Submit Attendance</button>
-    </form>
-</div>
+		<div class="alert alert-info" role="alert">
+			You can mark today's attendance below. If attendance has already been recorded, it will be
+			<strong>updated</strong>
+			instead of creating a duplicate.
+		</div>
+
+
+		<form method="post" action="/educator/attendance">
+			<input type="hidden" name="date" value="{{ today }}">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Child Name</th>
+						<th>Present</th>
+						<th>Absent</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for child in children %}
+						{# Find matching registration for this child #}
+						{% set reg = registrations | filter(r => r.child_id == child.id) | first %}
+						<tr>
+							<td>{{ child.name }}</td>
+							<td>
+								<input type="radio" name="attendance[{{ child.id }}]" value="present" {% if reg and reg.status == 'present' %} checked {% endif %} required>
+							</td>
+							<td>
+								<input type="radio" name="attendance[{{ child.id }}]" value="absent" {% if reg and reg.status == 'absent' %} checked {% endif %} required>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="3">No children assigned.</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<button type="submit" class="btn btn-primary">Submit Attendance</button>
+		</form>
+	</div>
 {% endblock %}

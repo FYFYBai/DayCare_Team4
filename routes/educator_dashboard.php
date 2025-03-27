@@ -13,11 +13,22 @@ $app->get('/educator-dashboard', function (Request $request, Response $response,
     $today = date("Y-m-d");
     // Fetch attendance records (registrations) for today
     $registrations = DB::query("SELECT * FROM registrations WHERE registration_date = %s", $today);
+
+      // Count present and absent
+      $presentCount = 0;
+      $absentCount = 0;
+  
+      foreach ($registrations as $r) {
+          if ($r['status'] === 'present') $presentCount++;
+          if ($r['status'] === 'absent') $absentCount++;
+      }
     
     return $this->get(Twig::class)->render($response, 'educator-dashboard.html.twig', [
         'user'           => $user,
         'children'       => $children,
         'registrations'  => $registrations,
-        'today'          => $today
+        'today'          => $today,
+        'presentCount'   => $presentCount,
+        'absentCount'    => $absentCount
     ]);
 })->add($checkRoleMiddleware('educator'));
