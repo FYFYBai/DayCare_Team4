@@ -64,10 +64,7 @@
         {% if hasCompletedPayment and latestCompletedPayment %}
           <div class="alert alert-success">
             Registration payment completed on {{ latestCompletedPayment.payment_date|date('Y-m-d') }}
-            for {{ latestCompletedPayment.child_count }} child(ren).
             <br>
-            <small class="text-muted">Transaction ID: {{ latestCompletedPayment.stripe_session_id }}</small>
-          </div>
         {% else %}
           <div class="alert alert-warning">
             Registration payment pending.
