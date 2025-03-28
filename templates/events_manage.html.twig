@@ -4,7 +4,7 @@
 
 {% block addHead %}
 <!-- FullCalendar CSS -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet'>
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css' rel='stylesheet'>
 <style>
     #calendar {
         max-width: 1100px;
@@ -177,8 +177,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Bootstrap modals
-    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-    const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    let deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
     let currentDeleteForm = null;
     
     // Initialize FullCalendar
@@ -223,8 +223,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Reset form validation
     function resetFormValidation() {
-        const form = document.getElementById('eventForm');
-        const inputs = form.querySelectorAll('input, textarea');
+        let form = document.getElementById('eventForm');
+        let inputs = form.querySelectorAll('input, textarea');
         
         inputs.forEach(input => {
             input.classList.remove('is-invalid');
@@ -247,11 +247,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validation and submission function
     function validateAndSubmitForm() {
         let valid = true;
-        const form = document.getElementById('eventForm');
+        let form = document.getElementById('eventForm');
         resetFormValidation();
         
         // Check title
-        const titleEl = document.getElementById('title');
+        let titleEl = document.getElementById('title');
         if (!titleEl.value.trim()) {
             titleEl.classList.add('is-invalid');
             document.getElementById('title-error').textContent = 'Event title is required';
@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Check dates
-        const startDateEl = document.getElementById('start_date');
-        const endDateEl = document.getElementById('end_date');
-        const startDate = new Date(startDateEl.value);
-        const endDate = new Date(endDateEl.value);
+        let startDateEl = document.getElementById('start_date');
+        let endDateEl = document.getElementById('end_date');
+        let startDate = new Date(startDateEl.value);
+        let endDate = new Date(endDateEl.value);
         
         if (isNaN(startDate.getTime())) {
             startDateEl.classList.add('is-invalid');
