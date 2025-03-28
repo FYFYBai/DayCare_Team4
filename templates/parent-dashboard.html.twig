@@ -49,18 +49,6 @@
         </div>
       </div>
 
-      <!-- Events -->
-      <div class="mb-4">
-        <h4>Upcoming Events</h4>
-        <ul class="list-group">
-          {% for event in events %}
-            <li class="list-group-item">{{ event.name }} - {{ event.date }}</li>
-          {% else %}
-            <li class="list-group-item">No upcoming events scheduled.</li>
-          {% endfor %}
-        </ul>
-      </div>
-
       <!-- Payment Status -->
       <div class="mb-4">
         <h4>Registration Payment Status</h4>
