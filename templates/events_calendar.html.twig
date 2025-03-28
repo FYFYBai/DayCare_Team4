@@ -4,7 +4,7 @@
 
 {% block addHead %}
 <!-- FullCalendar CSS: https://www.youtube.com/watch?v=hyVzloriEfo&list=PLkqwj9vc20pUyz2hLxtdUOc0cISEagtmm -->
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet'>
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css' rel='stylesheet'>
 <style>
     #calendar {
         max-width: 1100px;
@@ -78,7 +78,7 @@
 {% endblock %}
 
 {% block addJS %}
-<!-- FullCalendar JS: https://fullcalendar.io/docs/initialize-globals-->
+<!-- FullCalendar JS: https://fullcalendar.io/docs/initialize-globals (first part is exactly like the script given by the documentation)-->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('eventModalStart').textContent = formatDateTime(event.start);
         document.getElementById('eventModalEnd').textContent = formatDateTime(event.end);
         
-        var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        let modal = new bootstrap.Modal(document.getElementById('eventModal'));
         modal.show();
     }
     
