@@ -30,9 +30,11 @@
 							<li class="nav-item">
 								<a class="nav-link" href="/">Home</a>
 							</li>
+							{% if user %}
 							<li class="nav-item">
 								<a class="nav-link" href="/events/calendar">Events Calendar</a>
 							</li>
+							{% endif %}
 							{% if user and (user.role == 'educator' or user.role == 'admin') %}
 							<li class="nav-item">
 								<a class="nav-link" href="/events/manage">Manage Events</a>
