@@ -13,7 +13,12 @@ function calculatePaymentAmount($userId, $inputChildrenCount = null) {
         return ['error' => 'User not found'];
     }
     
-    $childrenCount = ($inputChildrenCount !== null) ? max(1, (int)$inputChildrenCount) : max(1, count(DB::query("SELECT * FROM children WHERE parent_id=%i AND isDeleted=0", $userId)));
+    // Validate child count (between 1-10)
+    $childrenCount = ($inputChildrenCount !== null) 
+        ? max(1, min(10, (int)$inputChildrenCount)) 
+        : max(1, count(DB::query("SELECT * FROM children WHERE parent_id=%i AND isDeleted=0", $userId)));
+    
+    // Hardcoded registration fee (if more time, I would have added a registration fee table in the database and store it there)
     $registrationFee = 100.00;
     $totalAmount = $registrationFee * $childrenCount;
     $totalAmountCents = (int)($totalAmount * 100);
@@ -39,6 +44,16 @@ $app->get('/payment', function (Request $request, Response $response) {
     if (!$userId) {
         return $response->withHeader('Location', '/login')->withStatus(302);
     }
+    
+    // Check if user already has a completed payment
+    $completedPayment = DB::queryFirstRow("SELECT * FROM payments 
+        WHERE user_id=%i AND payment_status='completed' AND isDeleted=0", $userId);
+    
+    if ($completedPayment) {
+        // Redirect to dashboard if already paid
+        return $response->withHeader('Location', '/parent-dashboard')->withStatus(302);
+    }
+    
     $paymentDetails = calculatePaymentAmount($userId);
     return $this->get(Twig::class)->render($response, 'payment.html.twig', [
         'userId' => $userId,
@@ -47,17 +62,32 @@ $app->get('/payment', function (Request $request, Response $response) {
 });
 
 $app->post('/checkout', function (Request $request, Response $response) {
-    $logger = $this->get(Logger::class);
     $userId = $_SESSION['user_id'] ?? null;
     if (!$userId) {
         return $response->withHeader('Location', '/login')->withStatus(302);
     }
+    
     try {
+        // Check if user already has a completed payment
+        $completedPayment = DB::queryFirstRow("SELECT * FROM payments 
+            WHERE user_id=%i AND payment_status='completed' AND isDeleted=0", $userId);
+        
+        if ($completedPayment) {
+            // Prevent duplicate payments
+            return $response->withHeader('Location', '/parent-dashboard')->withStatus(302);
+        }
+        
         $data = $request->getParsedBody();
         $inputChildrenCount = isset($data['childCount']) ? (int)$data['childCount'] : null;
+        
+        // Validate child count
+        if ($inputChildrenCount < 1 || $inputChildrenCount > 10) {
+            return $response->withHeader('Location', '/payment?error=invalid_child_count')->withStatus(302);
+        }
+        
         $paymentDetails = calculatePaymentAmount($userId, $inputChildrenCount);
         
-        // Create Stripe session first
+        // Create Stripe session
         \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
         $checkout_session = \Stripe\Checkout\Session::create([
             "mode" => "payment",
@@ -70,7 +100,7 @@ $app->post('/checkout', function (Request $request, Response $response) {
             ]
         ]);
         
-        // Then create payment record with session ID
+        // Create payment record with session ID
         DB::insert('payments', [
             'user_id' => $userId,
             'amount' => $paymentDetails['totalAmount'],
@@ -80,24 +110,13 @@ $app->post('/checkout', function (Request $request, Response $response) {
             'stripe_session_id' => $checkout_session->id
         ]);
         
-        $paymentId = DB::insertId();
-        $_SESSION['pending_payment_id'] = $paymentId;
-        
-        $logger->info('Stripe checkout session created', [
-            'session_id' => $checkout_session->id,
-            'payment_id' => $paymentId,
-            'user_id' => $userId
-        ]);
-        
         return $response->withHeader('Location', $checkout_session->url)->withStatus(303);
     } catch (\Exception $e) {
-        $logger->error('Stripe checkout failed: ' . $e->getMessage());
         return $response->withHeader('Location', '/payment?error=payment_failed')->withStatus(303);
     }
 });
 
 $app->get('/payment-success', function (Request $request, Response $response) {
-    $logger = $this->get(Logger::class);
     $userId = $_SESSION['user_id'] ?? null;
     
     if (!$userId) {
@@ -107,7 +126,6 @@ $app->get('/payment-success', function (Request $request, Response $response) {
     try {
         // Get the session ID from URL
         $session_id = $request->getQueryParams()['session_id'] ?? null;
-        $logger->info('Payment success accessed with session_id: ' . $session_id);
         
         if (!$session_id) {
             throw new Exception('No session ID provided');
@@ -116,7 +134,6 @@ $app->get('/payment-success', function (Request $request, Response $response) {
         // Verify with Stripe
         \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
         $session = \Stripe\Checkout\Session::retrieve($session_id);
-        $logger->info('Stripe session retrieved: ' . print_r($session->toArray(), true));
         
         // Get the payment record using session ID
         $payment = DB::queryFirstRow("SELECT * FROM payments 
@@ -136,12 +153,6 @@ $app->get('/payment-success', function (Request $request, Response $response) {
             'payment_date' => date('Y-m-d H:i:s')
         ], "id=%i", $payment['id']);
         
-        $logger->info('Payment marked as completed', [
-            'payment_id' => $payment['id'],
-            'user_id' => $userId,
-            'stripe_session_id' => $session_id
-        ]);
-        
         // Get updated payment record
         $updatedPayment = DB::queryFirstRow("SELECT * FROM payments WHERE id = %i", $payment['id']);
         
@@ -150,7 +161,6 @@ $app->get('/payment-success', function (Request $request, Response $response) {
         ]);
         
     } catch (Exception $e) {
-        $logger->error('Payment verification failed: ' . $e->getMessage());
         return $response->withHeader('Location', '/payment?error=verification_failed')->withStatus(302);
     }
 });
