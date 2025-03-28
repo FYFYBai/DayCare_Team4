@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Slim\Routing\RouteContext;
 
+// I based and got inspired by this video: https://www.youtube.com/watch?v=hyVzloriEfo&list=PLkqwj9vc20pUyz2hLxtdUOc0cISEagtmm
 // Helper function to get calendar data
 function getCalendarData($month, $year) {
     // First day of the month
