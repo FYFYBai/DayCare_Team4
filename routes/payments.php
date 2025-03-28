@@ -4,8 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
 use Monolog\Logger;
 
-session_start(); // Ensure sessions are started
-
+// I based and got inspired by this video: https://www.youtube.com/watch?v=1KxD8J8CAFg&t=1s
 // Function to calculate the payment amount
 function calculatePaymentAmount($userId, $inputChildrenCount = null) {
     $user = DB::queryFirstRow("SELECT * FROM users WHERE id=%i AND isDeleted=0", $userId);
