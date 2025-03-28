@@ -132,9 +132,9 @@ $app->get('/events/calendar', function (Request $request, Response $response) {
     $flash = $this->get(\Slim\Flash\Messages::class);
     
     // Get upcoming events
-    $today = date('Y-m-d H:i:s');
+    $today = date('Y-m-d');
     $upcomingEvents = DB::query("SELECT * FROM events 
-                                WHERE start_date >= %s 
+                                WHERE DATE(start_date) >= %s 
                                 AND isDeleted = 0 
                                 ORDER BY start_date ASC 
                                 LIMIT 10", $today);
