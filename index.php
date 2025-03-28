@@ -12,6 +12,7 @@ require_once __DIR__ . '/routes/home.php';
 require_once __DIR__ . '/routes/registration.php';
 require_once __DIR__ . '/routes/auth.php';
 require_once __DIR__ . '/routes/password_reset.php';
+require_once __DIR__ . '/routes/events.php';
 require_once __DIR__ . '/routes/dashboard.php';
 require_once __DIR__ . '/routes/educator_dashboard.php';
 require_once __DIR__ . '/routes/educator_attendance.php';
