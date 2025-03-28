@@ -255,10 +255,12 @@ cont. educatore-dashboard (implement attendance tracking feature)
 ==========================================================
 2025/03/27 Shao Hang
 1. Done since last scrum
-
+Done with the frontend of the fullCalendar
 2. Plan until next Scrum
-
+Finish the fullCalendar backend
+Make sure everything is ready for the presentation. Prepare the powerpoint. Add any other validations or fix any other bugs.
 3. Need assistance / figure things out
+How to show the calendar with npm or cdn, figure out how to make the make the backend of the fullCalendar work.
 ------------------------------------------------------
 
  Qi He
