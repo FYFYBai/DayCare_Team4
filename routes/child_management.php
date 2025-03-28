@@ -155,7 +155,8 @@ $app->group('/child', function (RouteCollectorProxy $group) {
             return $response->withStatus(400);
         }
 
-        $photoPath = $child['profile_photo_path']; // Default: keep existing
+        // Default: keep existing image path
+        $photoPath = $child['profile_photo_path'];
 
         // Handle file upload from input field "profile_photo"
         $uploadedFiles = $request->getUploadedFiles();
@@ -170,6 +171,13 @@ $app->group('/child', function (RouteCollectorProxy $group) {
                 $response->getBody()->write("File size exceeds 2MB limit.");
                 return $response->withStatus(400);
             }
+            // If an old image exists, delete it
+            if (!empty($child['profile_photo_path'])) {
+                $oldFile = __DIR__ . '/../uploads/' . $child['profile_photo_path'];
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
             // Generate a unique filename using UUID
             $filename = Uuid::uuid4()->toString() . '-' . $profilePhoto->getClientFilename();
             $profilePhoto->moveTo(__DIR__ . '/../uploads/' . $filename);
@@ -179,6 +187,13 @@ $app->group('/child', function (RouteCollectorProxy $group) {
         // Handle captured image (webcam capture)
         $capturedImage = trim($data['captured_image'] ?? '');
         if (!empty($capturedImage)) {
+            // If an old image exists, delete it
+            if (!empty($child['profile_photo_path'])) {
+                $oldFile = __DIR__ . '/../uploads/' . $child['profile_photo_path'];
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
             // Expect a data URL like "data:image/png;base64,..."
             $parts = explode(',', $capturedImage);
             if (count($parts) == 2) {
