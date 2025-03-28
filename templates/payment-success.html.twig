@@ -2,78 +2,21 @@
 
 {% block title %}Payment Successful - Daycare System{% endblock %}
 
-{% block head %}
-{{ parent() }}
-<style>
-    .payment-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 15px;
-    }
-
-    .payment-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    .payment-column {
-        flex: 0 1 600px;
-        max-width: 600px;
-    }
-
-    .payment-card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .payment-header {
-        background: #28a745;
-        color: white;
-        padding: 1.5rem;
-        text-align: center;
-    }
-
-    .payment-body {
-        padding: 2rem;
-        text-align: center;
-    }
-
-    .payment-button {
-        display: block;
-        width: 100%;
-        padding: 0.75rem;
-        background: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background 0.3s ease;
-        margin-top: 1.5rem;
-    }
-
-    .payment-button:hover {
-        background: #0056b3;
-    }
-
-    @media (max-width: 768px) {
-        .payment-column {
-            flex-basis: 100%;
-            max-width: 100%;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="payment-container">
-    <div class="payment-grid">
-        <div class="payment-column">
-            <div class="payment-card">
-                <div class="payment-header">
-                    <h1>Payment Successful</h1>
+    <div class="payment-card">
+        <div class="payment-header">
+            <h1>Payment Successful</h1>
+        </div>
+        <div class="payment-body">
+            <h2>Thank you for your payment!</h2>
+            
+            {% if payment %}
+                <div class="payment-details">
+                    <p><strong>Amount paid:</strong> ${{ payment.amount|number_format(2) }}</p>
+                    <p><strong>Number of children:</strong> {{ payment.child_count }}</p>
+                    <p><strong>Date:</strong> {{ payment.payment_date|date('Y-m-d H:i:s') }}</p>
+                    <p><strong>Transaction ID:</strong> <small>{{ payment.stripe_session_id }}</small></p>
                 </div>
                 <div class="payment-body">
                     <h2>Thank you for your payment!</h2>
@@ -83,10 +26,15 @@
                         <p>Date: {{ payment.payment_date|date('Y-m-d H:i:s') }}</p>
                         <p>Transaction ID: {{ payment.stripe_session_id }}</p>
                     {% endif %}
-                    <p>Your registration is now complete. Have a wonderful day!</p>
+                    <p>Your registration is now complete.</p>
                     <a href="/parent-dashboard" class="payment-button">Go to Dashboard</a>
                 </div>
             </div>
+
+            {% endif %}
+            <p>Your registration is now complete.</p>
+            <a href="/parent-dashboard" class="payment-button">Go to Dashboard</a>
+
         </div>
     </div>
 </div>
