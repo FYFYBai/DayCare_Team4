@@ -78,7 +78,7 @@ $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
 
 // Add routing and error middleware
 $app->addRoutingMiddleware();
-$app->addErrorMiddleware(true, true, true);
+$app->addErrorMiddleware(true, logErrors: true, true);
 
 // Register Logger (might remove, TODO:testing)
 $container->set(Logger::class, function () use ($log) {
