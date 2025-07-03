@@ -1,6 +1,11 @@
 <?php
 session_start(); // Start PHP session
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 // Autoload dependencies via Composer
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -32,23 +37,29 @@ $container->set(Logger::class, function() use ($log) {
 
 
 // Setup database using MeekroDB (adjust as needed)
-if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
-    DB::$dbName = 'cp5114_team4';
-    DB::$user = 'cp5114_team4';
-    DB::$password = '=w%S0M.pGNq_';
-    DB::$host = 'fsd13.ca';
-} else {
-    DB::$dbName = 'cp5114_team4';
-    DB::$user = 'cp5114_team4';
-    DB::$password = '=w%S0M.pGNq_';
-}
+// if ($_SERVER['SERVER_NAME'] == 'daycaresystem.org') {
+//     DB::$dbName = 'cp5114_team4';
+//     DB::$user = 'cp5114_team4';
+//     DB::$password = '=w%S0M.pGNq_';
+//     DB::$host = 'fsd13.ca';
+// } else {
+//     DB::$dbName = 'cp5114_team4';
+//     DB::$user = 'cp5114_team4';
+//     DB::$password = '=w%S0M.pGNq_';
+// }
+
+// switching to infinityfree database
+DB::$dbName = $_ENV['DB_NAME'];
+DB::$user = $_ENV['DB_USER'];
+DB::$password = $_ENV['DB_PASSWORD'];
+DB::$host = $_ENV['DB_HOST'];
 
 // Create dependency injection container and set it to Slim
 $container = new Container();
 AppFactory::setContainer($container);
 
 // Register Twig view in container
-$container->set(Twig::class, function() {
+$container->set(Twig::class, function () {
     return Twig::create(__DIR__ . '/templates', [
         'cache' => __DIR__ . '/tmplcache',
         'debug' => true
@@ -70,7 +81,7 @@ $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
 // Register Logger (might remove, TODO:testing)
-$container->set(Logger::class, function() use ($log) {
+$container->set(Logger::class, function () use ($log) {
     return $log;
 });
 
