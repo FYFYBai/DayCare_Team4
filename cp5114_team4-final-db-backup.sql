@@ -21,41 +21,41 @@ SET time_zone = "+00:00";
 -- Database: `cp5114_team4`
 --
 
-DELIMITER $$
+-- DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`cp5114`@`localhost` PROCEDURE `InsertAttendanceLastMonth` ()   BEGIN
-    DECLARE currentDate DATE;
-    -- Start date: 6v months before today
-    SET currentDate = DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
+-- CREATE DEFINER=`cp5114`@`localhost` PROCEDURE `InsertAttendanceLastMonth` ()   BEGIN
+--     DECLARE currentDate DATE;
+--     -- Start date: 6v months before today
+--     SET currentDate = DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
     
-    WHILE currentDate <= CURDATE() DO
-        -- Insert one record for each child on the current date.
-        INSERT INTO registrations (child_id, registration_date, status)
-        SELECT id, currentDate, IF(RAND() < 0.9, 'present', 'absent') FROM children;
+--     WHILE currentDate <= CURDATE() DO
+--         -- Insert one record for each child on the current date.
+--         INSERT INTO registrations (child_id, registration_date, status)
+--         SELECT id, currentDate, IF(RAND() < 0.9, 'present', 'absent') FROM children;
         
-        -- Move to the next day.
-        SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
-    END WHILE;
-END$$
+--         -- Move to the next day.
+--         SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+--     END WHILE;
+-- END$$
 
-CREATE DEFINER=`cp5114`@`localhost` PROCEDURE `InsertAttendanceLastSixMonths` ()   BEGIN
-    DECLARE currentDate DATE;
-    -- Start date: 6v months before today
-    SET currentDate = DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
+-- CREATE DEFINER=`cp5114`@`localhost` PROCEDURE `InsertAttendanceLastSixMonths` ()   BEGIN
+--     DECLARE currentDate DATE;
+--     -- Start date: 6v months before today
+--     SET currentDate = DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
     
-    WHILE currentDate <= CURDATE() DO
-        -- Insert one record for each child on the current date.
-        INSERT INTO registrations (child_id, registration_date, status)
-        SELECT id, currentDate, IF(RAND() < 0.9, 'present', 'absent') FROM children;
+--     WHILE currentDate <= CURDATE() DO
+--         -- Insert one record for each child on the current date.
+--         INSERT INTO registrations (child_id, registration_date, status)
+--         SELECT id, currentDate, IF(RAND() < 0.9, 'present', 'absent') FROM children;
         
-        -- Move to the next day.
-        SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
-    END WHILE;
-END$$
+--         -- Move to the next day.
+--         SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+--     END WHILE;
+-- END$$
 
-DELIMITER ;
+-- DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -5136,7 +5136,7 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `registrations`
   ADD CONSTRAINT `registrations_ibfk_1` FOREIGN KEY (`child_id`) REFERENCES `children` (`id`);
-COMMIT;
+-- COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
